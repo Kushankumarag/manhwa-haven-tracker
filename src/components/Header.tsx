@@ -18,12 +18,12 @@ export const Header: React.FC<HeaderProps> = ({
   totalCount,
 }) => {
   return (
-    <header className="w-full px-0 py-5 bg-white dark:bg-neutral-900 border-b shadow-sm flex items-center justify-between mb-4">
+    <header className="w-full px-0 py-5 bg-[#121212] border-b-0 shadow flex items-center justify-between mb-8">
       <div className="flex items-center gap-4">
-        <span className="font-bold text-xl tracking-tight text-gray-900 dark:text-white">
+        <span className="font-black text-[1.75rem] tracking-tight text-white">
           Manhwa Tracker
         </span>
-        <span className="ml-4 rounded bg-gray-100 dark:bg-neutral-800 px-3 py-1 text-sm text-gray-500 dark:text-gray-300 border border-gray-200 dark:border-neutral-700">
+        <span className="ml-4 rounded bg-[#181818] px-3 py-1 text-base text-gray-300 border-0 font-medium">
           {totalCount} titles
         </span>
       </div>
@@ -32,7 +32,7 @@ export const Header: React.FC<HeaderProps> = ({
           variant="outline"
           size="sm"
           onClick={onDarkToggle}
-          className="rounded px-3 border"
+          className="rounded-md px-3 border-0 bg-[#232323] text-white hover:bg-[#333]"
         >
           {isDark ? "Light Mode" : "Dark Mode"}
         </Button>
@@ -40,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
           variant="outline"
           size="sm"
           onClick={onExport}
-          className="rounded px-3 border"
+          className="rounded-md px-3 border-0 bg-[#292929] text-white hover:bg-[#444]"
         >
           Export JSON
         </Button>
@@ -54,7 +54,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Button
             variant="outline"
             size="sm"
-            className="rounded px-3 border"
+            className="rounded-md px-3 border-0 bg-[#664fd9] text-white hover:bg-[#7769e2]"
           >
             Import JSON
           </Button>
