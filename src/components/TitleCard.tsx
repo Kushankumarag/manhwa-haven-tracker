@@ -41,10 +41,10 @@ export const TitleCard: React.FC<Props> = ({
   };
 
   return (
-    <div className="bg-card rounded-3xl shadow-xl flex flex-col h-full hover:scale-[1.018] hover:shadow-2xl transition-all duration-200 p-4 border-0">
+    <div className="bg-card rounded-2xl shadow-lg flex flex-col h-full hover:scale-[1.012] hover:shadow-xl transition-all duration-200 p-3 md:p-3 border-0 min-w-0">
       {/* Cover image */}
       <div
-        className="w-full aspect-[4/5] bg-secondary rounded-2xl mb-4 flex items-center justify-center overflow-hidden"
+        className="w-full aspect-[4/5] bg-secondary rounded-xl mb-2 flex items-center justify-center overflow-hidden"
         style={{
           backgroundImage: title.coverUrl ? `url(${title.coverUrl})` : undefined,
           backgroundSize: title.coverUrl ? "cover" : undefined,
@@ -52,55 +52,59 @@ export const TitleCard: React.FC<Props> = ({
         }}
       >
         {!title.coverUrl && (
-          <span className="text-2xl text-muted-foreground select-none">No Image</span>
+          <span className="text-base text-muted-foreground select-none">No Image</span>
         )}
       </div>
       {/* Info */}
-      <div className="flex items-center gap-2 mb-2">
-        <span className={`rounded-full px-3 py-0.5 text-xs font-bold shadow-sm ${typeColors[title.type] || "bg-gray-200 text-black"}`}>
+      <div className="flex items-center gap-1 mb-1">
+        <span
+          className={`rounded-full px-2 py-0.5 text-[11px] font-bold shadow-sm ${typeColors[title.type] || "bg-gray-200 text-black"}`}
+        >
           {title.type}
         </span>
-        <span className="rounded-full px-3 py-0.5 text-xs font-semibold bg-muted text-muted-foreground">
+        <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold bg-muted text-muted-foreground">
           {title.status}
         </span>
-        <span className="ml-auto text-xs text-muted-foreground">{timeAgo(title.lastUpdated)}</span>
+        <span className="ml-auto text-[10px] text-muted-foreground">
+          {timeAgo(title.lastUpdated)}
+        </span>
       </div>
       {/* Title */}
-      <h3 className="font-bold text-xl mb-1 truncate text-foreground">{title.title}</h3>
+      <h3 className="font-bold text-base mb-1 truncate text-foreground">{title.title}</h3>
       {/* Tags */}
       {title.tags && title.tags.length > 0 && (
-        <div className="mb-2 flex flex-wrap gap-2">
+        <div className="mb-1 flex flex-wrap gap-1">
           {title.tags.map((tag) => (
-            <span key={tag} className="text-xs bg-muted px-3 py-0.5 rounded-full text-muted-foreground">{tag}</span>
+            <span key={tag} className="text-[10px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">{tag}</span>
           ))}
         </div>
       )}
       {/* Progress */}
-      <div className="mb-2 flex items-center gap-2">
+      <div className="mb-1 flex items-center gap-2">
         <ProgressBar value={progress} max={total || Math.max(progress, 1)} />
-        <span className="text-[13px] text-muted-foreground ml-2">
+        <span className="text-[11px] text-muted-foreground ml-2">
           {progress}
           {total ? <>/{total}</> : ""}
         </span>
       </div>
       {/* Actions */}
-      <div className="flex gap-2 mt-auto">
+      <div className="flex gap-1 mt-auto">
         <button
-          className="rounded-full bg-primary/10 text-primary px-3 py-1 font-medium hover:bg-primary/20 transition"
+          className="rounded-full bg-primary/10 text-primary px-2 py-0.5 text-xs font-medium hover:bg-primary/20 transition"
           title="Add 1 Chapter"
           onClick={onAddChapter}
         >
-          +1 Chapter
+          +1
         </button>
         <button
-          className="rounded-full bg-secondary text-foreground px-3 py-1 font-medium hover:bg-muted transition"
+          className="rounded-full bg-secondary text-foreground px-2 py-0.5 text-xs font-medium hover:bg-muted transition"
           title="Edit"
           onClick={onEdit}
         >
           Edit
         </button>
         <button
-          className={`rounded-full px-3 py-1 font-medium transition ${
+          className={`rounded-full px-2 py-0.5 text-xs font-medium transition ${
             title.isFavorite
               ? "bg-[#ffd600]/80 text-black"
               : "bg-secondary text-foreground hover:bg-[#ffd600]/80 hover:text-black"
@@ -111,7 +115,7 @@ export const TitleCard: React.FC<Props> = ({
           Fav
         </button>
         <button
-          className="rounded-full bg-secondary text-foreground px-3 py-1 font-medium hover:bg-muted transition"
+          className="rounded-full bg-secondary text-foreground px-2 py-0.5 text-xs font-medium hover:bg-muted transition"
           title="Open Reading Site"
           onClick={onOpenSite}
           disabled={!title.siteUrl}
@@ -119,13 +123,14 @@ export const TitleCard: React.FC<Props> = ({
           Open
         </button>
         <button
-          className="rounded-full bg-destructive text-destructive-foreground px-3 py-1 font-medium hover:bg-red-800 transition"
+          className="rounded-full bg-destructive text-destructive-foreground px-2 py-0.5 text-xs font-medium hover:bg-red-800 transition"
           title="Delete"
           onClick={onDelete}
         >
-          Delete
+          Del
         </button>
       </div>
     </div>
   );
 };
+
