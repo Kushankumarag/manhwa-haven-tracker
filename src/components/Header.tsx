@@ -1,7 +1,7 @@
 
-
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { MoreVertical } from "lucide-react";
 
 type HeaderProps = {
   onDarkToggle: () => void;
@@ -18,48 +18,86 @@ export const Header: React.FC<HeaderProps> = ({
   onImport,
   totalCount,
 }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Close menu if clicked outside (minimalist approach)
+  React.useEffect(() => {
+    function close(e: MouseEvent) {
+      if (!(e.target as HTMLElement)?.closest(".menu-anchor")) setMenuOpen(false);
+    }
+    if (menuOpen) {
+      document.addEventListener("mousedown", close);
+      return () => document.removeEventListener("mousedown", close);
+    }
+  }, [menuOpen]);
+
   return (
-    <header className="w-full px-0 py-5 bg-popover shadow flex items-center justify-between mb-8 transition-colors duration-200">
+    <header className="w-full px-0 py-4 bg-popover shadow-none flex items-center justify-between mb-6 transition-colors duration-300">
       <div className="flex items-center gap-4">
-        <span className="font-black text-[1.75rem] tracking-tight text-foreground">
+        <span className="font-black text-[2rem] tracking-tight text-foreground font-inter">
           Manhwa Tracker
         </span>
-        <span className="ml-4 rounded bg-card px-3 py-1 text-base text-muted-foreground font-medium">
+        <span className="ml-3 rounded-full bg-card px-4 py-1 text-base text-muted-foreground font-medium shadow-sm border-0">
           {totalCount} titles
         </span>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
+        {/* Dark Light Toggle */}
         <Button
-          variant="outline"
-          size="sm"
+          variant="ghost"
+          size="icon"
+          aria-label="Toggle dark mode"
           onClick={onDarkToggle}
-          className="rounded-md px-3 bg-secondary text-foreground hover:bg-card"
+          className="rounded-full p-0 w-10 h-10 transition-all bg-primary/10 text-primary hover:bg-primary/20 shadow-none"
         >
-          {isDark ? "Light Mode" : "Dark Mode"}
+          <span className="sr-only">Toggle mode</span>
+          <span className="text-[1rem] font-semibold">{isDark ? "🌙" : "☀️"}</span>
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onExport}
-          className="rounded-md px-3 bg-card text-foreground hover:bg-secondary"
-        >
-          Export JSON
-        </Button>
-        <label>
-          <input
-            type="file"
-            accept="application/json"
-            onChange={onImport}
-            className="hidden"
-          />
+        {/* Three-dot dropdown menu for export/import */}
+        <div className="relative menu-anchor">
           <Button
-            variant="outline"
-            size="sm"
-            className="rounded-md px-3 bg-[#664fd9] text-white hover:bg-[#7769e2]"
+            variant="ghost"
+            size="icon"
+            aria-label="Actions"
+            className="rounded-full p-0 w-10 h-10 bg-card/60 hover:bg-muted"
+            onClick={() => setMenuOpen((v) => !v)}
           >
-            Import JSON
+            <MoreVertical className="w-6 h-6" />
           </Button>
-        </label>
+          {menuOpen && (
+            <div className="absolute right-0 mt-2 w-44 z-30 bg-popover rounded-xl py-2 shadow-lg animate-fade-in transition-all">
+              <button
+                className="w-full px-4 py-2 text-left hover:bg-primary/10 transition rounded-xl text-foreground font-medium"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onExport();
+                }}
+              >
+                Export JSON
+              </button>
+              <label className="w-full block cursor-pointer">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="application/json"
+                  onChange={onImport}
+                  className="hidden"
+                />
+                <span
+                  className="block px-4 py-2 hover:bg-primary/10 transition rounded-xl text-foreground font-medium"
+                  onClick={() => {
+                    // Triggers file picker
+                    fileInputRef.current?.click();
+                    setMenuOpen(false);
+                  }}
+                >
+                  Import JSON
+                </span>
+              </label>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
