@@ -1,4 +1,3 @@
-
 import React, { ChangeEvent, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { MoreVertical } from "lucide-react";
@@ -35,8 +34,8 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="w-full px-0 py-4 bg-popover shadow-none flex items-center justify-between mb-6 transition-colors duration-300">
       <div className="flex items-center gap-4">
-        <span className="font-black text-[2rem] tracking-tight text-foreground font-inter">
-          Manhwa Tracker
+        <span className="font-black text-[2rem] tracking-tight text-foreground font-playfair">
+          ManhwaVault
         </span>
         <span className="ml-3 rounded-full bg-card px-4 py-1 text-base text-muted-foreground font-medium shadow-sm border-0">
           {totalCount} titles
