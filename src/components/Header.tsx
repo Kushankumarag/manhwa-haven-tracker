@@ -1,4 +1,5 @@
 
+
 import React, { ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -18,12 +19,12 @@ export const Header: React.FC<HeaderProps> = ({
   totalCount,
 }) => {
   return (
-    <header className="w-full px-0 py-5 bg-popover border-b-0 shadow flex items-center justify-between mb-8 transition-colors duration-200">
+    <header className="w-full px-0 py-5 bg-popover shadow flex items-center justify-between mb-8 transition-colors duration-200">
       <div className="flex items-center gap-4">
         <span className="font-black text-[1.75rem] tracking-tight text-foreground">
           Manhwa Tracker
         </span>
-        <span className="ml-4 rounded bg-card px-3 py-1 text-base text-muted-foreground border-0 font-medium">
+        <span className="ml-4 rounded bg-card px-3 py-1 text-base text-muted-foreground font-medium">
           {totalCount} titles
         </span>
       </div>
@@ -32,7 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
           variant="outline"
           size="sm"
           onClick={onDarkToggle}
-          className="rounded-md px-3 border-0 bg-secondary text-foreground hover:bg-card"
+          className="rounded-md px-3 bg-secondary text-foreground hover:bg-card"
         >
           {isDark ? "Light Mode" : "Dark Mode"}
         </Button>
@@ -40,7 +41,7 @@ export const Header: React.FC<HeaderProps> = ({
           variant="outline"
           size="sm"
           onClick={onExport}
-          className="rounded-md px-3 border-0 bg-card text-foreground hover:bg-secondary"
+          className="rounded-md px-3 bg-card text-foreground hover:bg-secondary"
         >
           Export JSON
         </Button>
@@ -54,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Button
             variant="outline"
             size="sm"
-            className="rounded-md px-3 border-0 bg-[#664fd9] text-white hover:bg-[#7769e2]"
+            className="rounded-md px-3 bg-[#664fd9] text-white hover:bg-[#7769e2]"
           >
             Import JSON
           </Button>

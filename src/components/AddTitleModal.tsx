@@ -92,7 +92,7 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogTitle className="mb-4 text-foreground">{isEditing ? "Edit Title" : "Add New Title"}</DialogTitle>
-        <div className="p-6 w-full max-w-md mx-auto bg-card rounded-xl shadow-lg border-0 text-foreground">
+        <div className="p-6 w-full max-w-md mx-auto bg-card rounded-xl shadow-lg text-foreground">
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label className="block font-semibold mb-1 text-foreground">Title</label>
@@ -132,7 +132,7 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
               <div className="flex-1">
                 <label className="block font-semibold mb-1 text-foreground">Type</label>
                 <select
-                  className="w-full p-2 rounded-md border-0 bg-muted text-foreground font-medium"
+                  className="w-full p-2 rounded-md bg-muted text-foreground font-medium"
                   value={form.type}
                   onChange={(e) => handleChange("type", e.target.value as TitleType)}
                 >
@@ -144,7 +144,7 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
               <div className="flex-1">
                 <label className="block font-semibold mb-1 text-foreground">Status</label>
                 <select
-                  className="w-full p-2 rounded-md border-0 bg-muted text-foreground font-medium"
+                  className="w-full p-2 rounded-md bg-muted text-foreground font-medium"
                   value={form.status}
                   onChange={(e) => handleChange("status", e.target.value as TitleStatus)}
                 >

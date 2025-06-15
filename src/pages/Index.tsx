@@ -188,7 +188,7 @@ export default function Index() {
                 setEditingTitle(null);
                 setIsEditing(false);
               }}
-              className="px-3 py-2 bg-[#7C3AED] text-white rounded-md border-0 shadow hover:bg-[#9F5FFF] transition"
+              className="px-3 py-2 bg-[#7C3AED] text-white rounded-md shadow hover:bg-[#9F5FFF] transition"
             >
               Add New
             </Button>
@@ -197,7 +197,7 @@ export default function Index() {
                 <Button
                   key={t.id}
                   variant="ghost"
-                  className={`px-4 py-2 rounded-md border-0 ${
+                  className={`px-4 py-2 rounded-md ${
                     tab === t.id
                       ? "bg-[#232323] text-[#ffd600] font-semibold"
                       : "bg-transparent text-gray-300"
@@ -215,12 +215,12 @@ export default function Index() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search title / tag / type"
-              className="w-44 md:w-56 rounded-md border-0 bg-[#232323] text-white placeholder:text-gray-400"
+              className="w-44 md:w-56 rounded-md bg-[#232323] text-white placeholder:text-gray-400"
             />
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value as TitleType)}
-              className="rounded-md border-0 px-2 py-1 bg-[#232323] text-white"
+              className="rounded-md px-2 py-1 bg-[#232323] text-white"
             >
               <option value="">All Types</option>
               <option value="Manhwa">Manhwa</option>
@@ -230,7 +230,7 @@ export default function Index() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as TitleStatus)}
-              className="rounded-md border-0 px-2 py-1 bg-[#232323] text-white"
+              className="rounded-md px-2 py-1 bg-[#232323] text-white"
             >
               <option value="">All Statuses</option>
               <option value="Reading">Reading</option>
@@ -240,7 +240,7 @@ export default function Index() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="rounded-md border-0 px-2 py-1 bg-[#232323] text-white"
+              className="rounded-md px-2 py-1 bg-[#232323] text-white"
             >
               {SORTS.map((s) => (
                 <option value={s.id} key={s.id}>{s.label}</option>
