@@ -1,7 +1,8 @@
-import React from "react";
+
+import React, { useState } from "react";
 import { ManhwaTitle } from "@/types";
 import { ProgressBar } from "./ProgressBar";
-import { Link as LinkIcon, MoreHorizontal } from "lucide-react";
+import { Link as LinkIcon, MoreHorizontal, Image as ImageIcon } from "lucide-react";
 import {
   Menubar,
   MenubarMenu,
@@ -9,6 +10,11 @@ import {
   MenubarContent,
   MenubarItem,
 } from "@/components/ui/menubar";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+} from "@/components/ui/dialog";
 
 type Props = {
   title: ManhwaTitle;
@@ -49,6 +55,9 @@ export const TitleCard: React.FC<Props> = ({
     Manga: "bg-[#ee99c2]/90 text-pink-900",
   };
 
+  // For image modal (dialog)
+  const [showDialog, setShowDialog] = useState(false);
+
   return (
     <div className="bg-card rounded-2xl shadow-lg flex flex-col h-full hover:scale-[1.012] hover:shadow-xl transition-all duration-200 p-3 md:p-3 border-0 min-w-0 relative">
       {/* 3-dot menu top right */}
@@ -71,24 +80,65 @@ export const TitleCard: React.FC<Props> = ({
               >
                 Delete
               </MenubarItem>
-              {/* You can add more menu items if desired, e.g., Edit/Fav */}
+              {/* More items can be added here if needed */}
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
       </div>
-      {/* Cover image */}
-      <div
-        className="w-full aspect-[4/5] bg-secondary rounded-xl mb-2 flex items-center justify-center overflow-hidden"
-        style={{
-          backgroundImage: title.coverUrl ? `url(${title.coverUrl})` : undefined,
-          backgroundSize: title.coverUrl ? "cover" : undefined,
-          backgroundPosition: title.coverUrl ? "center" : undefined,
-        }}
-      >
-        {!title.coverUrl && (
-          <span className="text-base text-muted-foreground select-none">No Image</span>
+      {/* Cover w/ view image overlay */}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <div className="relative group w-full aspect-[4/5] bg-secondary rounded-xl mb-2 flex items-center justify-center overflow-hidden cursor-pointer">
+          {/* If there is a cover url, clicking shows dialog; otherwise, do nothing */}
+          {title.coverUrl ? (
+            <>
+              <DialogTrigger asChild>
+                <button
+                  type="button"
+                  className="absolute inset-0 w-full h-full focus:outline-none"
+                  aria-label={`View cover image for ${title.title}`}
+                  tabIndex={0}
+                />
+              </DialogTrigger>
+              <img
+                src={title.coverUrl}
+                alt={title.title}
+                className="object-cover w-full h-full"
+                style={{ pointerEvents: "none" }}
+                draggable={false}
+              />
+              {/* Show image icon button overlay on top right of image on hover/focus */}
+              <DialogTrigger asChild>
+                <button
+                  type="button"
+                  className="absolute top-2 right-2 z-20 opacity-80 hover:opacity-100 bg-white/80 rounded-full p-1 transition group-hover:block focus-visible:block"
+                  title="View full image"
+                  aria-label="View full image"
+                  tabIndex={0}
+                  onClick={(e) => { e.stopPropagation(); setShowDialog(true); }}
+                >
+                  <ImageIcon size={18} className="text-muted-foreground" />
+                </button>
+              </DialogTrigger>
+            </>
+          ) : (
+            <span className="text-base text-muted-foreground select-none">No Image</span>
+          )}
+        </div>
+        {/* The modal/dialog for big cover image */}
+        {title.coverUrl && (
+          <DialogContent className="flex flex-col items-center justify-center max-w-lg p-0 md:p-6 bg-background">
+            <img
+              src={title.coverUrl}
+              alt={title.title}
+              className="max-h-[80vh] w-auto max-w-full rounded-lg shadow-md"
+              draggable={false}
+            />
+            <div className="p-2 text-center select-text break-words text-sm line-clamp-2 text-muted-foreground w-full">
+              {title.title}
+            </div>
+          </DialogContent>
         )}
-      </div>
+      </Dialog>
       {/* Info */}
       <div className="flex items-center gap-1 mb-1">
         <span
@@ -173,3 +223,4 @@ export const TitleCard: React.FC<Props> = ({
     </div>
   );
 };
+
