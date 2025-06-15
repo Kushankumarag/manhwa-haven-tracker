@@ -12,7 +12,8 @@ import { Header } from "@/components/Header";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Check, Plus, Star, Search, Book, X } from "lucide-react";
+import { Check, Plus, Star, Search, Book, X, Link as LinkIcon } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 function generateId() {
   return Math.random().toString(36).slice(2, 10) + Date.now();
@@ -128,6 +129,11 @@ export default function Index() {
     }
   }
 
+  // New: Clear search handler
+  function handleClearSearch() {
+    setSearch("");
+  }
+
   // Filtering logic
   let filtered = titles;
   if (tab === "reading")
@@ -168,6 +174,9 @@ export default function Index() {
   const favs = filtered.filter((t) => t.isFavorite);
   const nonFavs = filtered.filter((t) => !t.isFavorite);
   const displayed = [...favs, ...nonFavs];
+
+  // New: Filtered count
+  const filteredCount = displayed.length;
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans transition-colors duration-300">
@@ -211,12 +220,25 @@ export default function Index() {
           </div>
           {/* Filters/Search */}
           <div className="flex flex-wrap gap-3 items-center">
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search title / tag / type"
-              className="w-44 md:w-56 rounded-full bg-muted text-foreground placeholder:text-muted-foreground shadow-md"
-            />
+            <div className="relative w-44 md:w-56">
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search title / tag / type"
+                className="w-full rounded-full bg-muted text-foreground placeholder:text-muted-foreground shadow-md pr-8"
+              />
+              {search.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary focus:outline-none"
+                  aria-label="Clear search"
+                  tabIndex={0}
+                >
+                  <X size={18} />
+                </button>
+              )}
+            </div>
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value as TitleType)}
@@ -249,7 +271,11 @@ export default function Index() {
           </div>
         </div>
         {/* Section header */}
-        <h2 className="text-2xl font-bold mb-3 border-l-4 border-primary/80 pl-3 py-1">Tracked Titles</h2>
+        <div className="flex items-center mb-3">
+          <h2 className="text-2xl font-bold border-l-4 border-primary/80 pl-3 py-1">Tracked Titles</h2>
+          {/* New: Filtered result count */}
+          <span className="ml-3 text-sm px-3 py-1 bg-secondary rounded-full text-muted-foreground">{filteredCount} shown</span>
+        </div>
         {/* List/Grid Main Content */}
         <section>
           {displayed.length === 0 ? (
@@ -267,6 +293,13 @@ export default function Index() {
                   onDelete={() => onDelete(t.id)}
                   onOpenSite={() => onOpenSite(t)}
                   onToggleFavorite={() => onToggleFavorite(t.id)}
+                  // New prop: copySiteUrl callback
+                  onCopySiteUrl={() => {
+                    if (t.siteUrl) {
+                      navigator.clipboard.writeText(t.siteUrl);
+                      toast({ title: "Site URL copied!", description: "The site URL has been copied to your clipboard." });
+                    }
+                  }}
                 />
               ))}
             </div>

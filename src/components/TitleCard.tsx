@@ -1,7 +1,7 @@
-
 import React from "react";
 import { ManhwaTitle } from "@/types";
 import { ProgressBar } from "./ProgressBar";
+import { Link as LinkIcon } from "lucide-react";
 
 type Props = {
   title: ManhwaTitle;
@@ -10,6 +10,7 @@ type Props = {
   onDelete: () => void;
   onOpenSite: () => void;
   onToggleFavorite: () => void;
+  onCopySiteUrl?: () => void; // New optional prop
 };
 
 function timeAgo(ts: number): string {
@@ -30,6 +31,7 @@ export const TitleCard: React.FC<Props> = ({
   onDelete,
   onOpenSite,
   onToggleFavorite,
+  onCopySiteUrl, // <-- new prop
 }) => {
   const total = title.totalChapters || 0;
   const progress = total ? Math.min(title.chapter, total) : title.chapter;
@@ -88,7 +90,7 @@ export const TitleCard: React.FC<Props> = ({
         </span>
       </div>
       {/* Actions */}
-      <div className="flex gap-1 mt-auto">
+      <div className="flex gap-1 mt-auto items-center">
         <button
           className="rounded-full bg-primary/10 text-primary px-2 py-0.5 text-xs font-medium hover:bg-primary/20 transition"
           title="Add 1 Chapter"
@@ -122,6 +124,18 @@ export const TitleCard: React.FC<Props> = ({
         >
           Open
         </button>
+        {/* New: Copy URL button (visible only if siteUrl exists) */}
+        {title.siteUrl && onCopySiteUrl && (
+          <button
+            className="rounded-full bg-secondary text-foreground px-2 py-0.5 text-xs font-medium hover:bg-primary/20 transition flex items-center gap-1"
+            title="Copy Site URL"
+            onClick={onCopySiteUrl}
+            type="button"
+          >
+            <LinkIcon size={14} className="inline-block" />
+            <span className="sr-only">Copy URL</span>
+          </button>
+        )}
         <button
           className="rounded-full bg-destructive text-destructive-foreground px-2 py-0.5 text-xs font-medium hover:bg-red-800 transition"
           title="Delete"
@@ -133,4 +147,3 @@ export const TitleCard: React.FC<Props> = ({
     </div>
   );
 };
-
