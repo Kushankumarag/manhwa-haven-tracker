@@ -36,7 +36,7 @@ export default function Index() {
   const [titles, setTitles] = useState<ManhwaTitle[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingTitle, setEditingTitle] = useState<ManhwaTitle | null>(null);
-  const [isEditing, setIsEditing] = useState(isEditing);
+  const [isEditing, setIsEditing] = useState(false);
 
   const [tab, setTab] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
