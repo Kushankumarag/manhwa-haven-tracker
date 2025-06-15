@@ -17,7 +17,7 @@ type Props = {
   onDelete: () => void;
   onOpenSite: () => void;
   onToggleFavorite: () => void;
-  onCopySiteUrl?: () => void; // New optional prop
+  onCopySiteUrl?: () => void;
 };
 
 function timeAgo(ts: number): string {
@@ -59,10 +59,16 @@ export const TitleCard: React.FC<Props> = ({
             <MenubarMenu>
               <MenubarTrigger asChild>
                 <button
-                  className="outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-0 ring-offset-transparent p-0 m-0 bg-transparent border-none shadow-none"
-                  style={{ background: "none", border: "none", boxShadow: "none", padding: 0, margin: 0 }}
                   aria-label="More actions"
                   type="button"
+                  className="p-0 m-0 border-none bg-transparent outline-none shadow-none ring-offset-0 focus:ring-0 focus-visible:ring-0 hover:bg-transparent active:bg-transparent"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    boxShadow: "none",
+                    padding: 0,
+                    margin: 0,
+                  }}
                 >
                   <MoreHorizontal size={20} />
                 </button>
@@ -74,7 +80,6 @@ export const TitleCard: React.FC<Props> = ({
                 >
                   Delete
                 </MenubarItem>
-                {/* More items can be added here if needed */}
               </MenubarContent>
             </MenubarMenu>
           </Menubar>
@@ -93,6 +98,7 @@ export const TitleCard: React.FC<Props> = ({
           <span className="relative z-0 text-base text-muted-foreground select-none">No Image</span>
         )}
       </div>
+      {/* Info */}
       {/* Info */}
       <div className="flex items-center gap-1 mb-1">
         <span
@@ -172,7 +178,6 @@ export const TitleCard: React.FC<Props> = ({
             <span className="sr-only">Copy URL</span>
           </button>
         )}
-        {/* Delete button removed from here */}
       </div>
     </div>
   );
