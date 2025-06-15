@@ -2,40 +2,15 @@
 import React from "react";
 import { ManhwaTitle } from "@/types";
 import { ProgressBar } from "./ProgressBar";
-import {
-  Star,
-  Edit,
-  Trash2,
-  ArrowRight,
-  Plus,
-  Book,
-  Bookmark,
-  Check,
-} from "lucide-react";
 
-const TYPE_FLAGS: Record<string, string> = {
-  Manhwa: "🇰🇷",
-  Manhua: "🇨🇳",
-  Manga: "🇯🇵",
+type Props = {
+  title: ManhwaTitle;
+  onAddChapter: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+  onOpenSite: () => void;
+  onToggleFavorite: () => void;
 };
-
-const STATUS_LABELS: Record<string, string> = {
-  Completed: "✅ Completed",
-  Reading: "📖 Reading",
-  Planned: "⏳ Planned",
-};
-
-const randomPlaceholder = [
-  "/photo-1486312338219-ce68d2c6f44d",
-  "/photo-1488590528505-98d2b5aba04b",
-  "/photo-1518770660439-4636190af475",
-  "/photo-1461749280684-dccba630e2f6",
-];
-
-function getPlaceholderCover(id: string) {
-  const idx = parseInt(id.slice(-1), 36) % randomPlaceholder.length;
-  return randomPlaceholder[idx];
-}
 
 function timeAgo(ts: number): string {
   const now = Date.now();
@@ -48,15 +23,6 @@ function timeAgo(ts: number): string {
   return `${days} days ago`;
 }
 
-type Props = {
-  title: ManhwaTitle;
-  onAddChapter: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
-  onOpenSite: () => void;
-  onToggleFavorite: () => void;
-};
-
 export const TitleCard: React.FC<Props> = ({
   title,
   onAddChapter,
@@ -68,45 +34,29 @@ export const TitleCard: React.FC<Props> = ({
   const total = title.totalChapters || 0;
   const progress = total ? Math.min(title.chapter, total) : title.chapter;
   return (
-    <div className="group bg-card rounded-lg shadow-card p-4 flex flex-col relative hover:shadow-lg transition-shadow duration-200">
-      {/* Favorite badge */}
-      {title.isFavorite && (
-        <div className="absolute top-4 right-4 z-10">
-          <Star size={18} className="text-yellow-400 fill-yellow-300" />
-        </div>
-      )}
+    <div className="bg-white border rounded p-4 flex flex-col h-full">
       {/* Cover image */}
       <div
-        className="relative w-full aspect-[4/5] bg-muted rounded-md mb-3 overflow-hidden flex items-center justify-center shadow-inner"
+        className="w-full aspect-[4/5] bg-gray-100 rounded mb-3 flex items-center justify-center"
         style={{
-          backgroundImage: title.coverUrl
-            ? `url(${title.coverUrl})`
-            : `url(${getPlaceholderCover(title.id)})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundImage: title.coverUrl ? `url(${title.coverUrl})` : undefined,
+          backgroundSize: title.coverUrl ? "cover" : undefined,
+          backgroundPosition: title.coverUrl ? "center" : undefined,
         }}
       >
         {!title.coverUrl && (
-          <span className="text-2xl text-slate-400 select-none">
-            <Book className="mx-auto" />
-          </span>
+          <span className="text-2xl text-gray-300 select-none">No Image</span>
         )}
       </div>
       {/* Info */}
       <div className="flex items-center gap-2 mb-2">
-        <span className="rounded border bg-slateBlue/10 text-slateBlue font-medium text-xs px-2 py-0.5 flex items-center gap-1">
-          {TYPE_FLAGS[title.type] || ""} {title.type}
+        <span className="rounded bg-gray-200 text-gray-700 font-normal text-xs px-2 py-0.5">
+          {title.type}
         </span>
-        <span className={`rounded px-2 py-0.5 text-xs font-medium
-          ${title.status === "Reading"
-            ? "bg-violet-500/10 text-violet-600"
-            : title.status === "Completed"
-            ? "bg-green-50 text-green-600"
-            : "bg-slate-200 text-slate-500"}
-        `}>
-          {STATUS_LABELS[title.status]}
+        <span className="rounded bg-gray-100 text-gray-600 text-xs px-2 py-0.5">
+          {title.status}
         </span>
-        <span className="ml-auto text-xs text-slate-400">{timeAgo(title.lastUpdated)}</span>
+        <span className="ml-auto text-xs text-gray-400">{timeAgo(title.lastUpdated)}</span>
       </div>
       {/* Title */}
       <h3 className="font-semibold text-lg mb-1 truncate">{title.title}</h3>
@@ -114,14 +64,14 @@ export const TitleCard: React.FC<Props> = ({
       {title.tags && title.tags.length > 0 && (
         <div className="mb-2 flex flex-wrap gap-1">
           {title.tags.map((tag) => (
-            <span key={tag} className="text-xs bg-muted px-2 py-0.5 rounded-full text-slate-500 border">{tag}</span>
+            <span key={tag} className="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-600 border">{tag}</span>
           ))}
         </div>
       )}
       {/* Progress */}
       <div className="mb-2 flex items-center gap-2">
         <ProgressBar value={progress} max={total || Math.max(progress, 1)} />
-        <span className="text-[13px] text-slate-500 ml-2">
+        <span className="text-[13px] text-gray-600 ml-2">
           {progress}
           {total ? <>/{total}</> : ""}
         </span>
@@ -129,42 +79,43 @@ export const TitleCard: React.FC<Props> = ({
       {/* Actions */}
       <div className="flex gap-2 mt-auto">
         <button
-          className="rounded-full bg-violet-100 hover:bg-violet-300/80 text-violet-700 px-2 py-1 transition hover-scale shadow"
+          className="rounded bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 py-1 border"
           title="Add 1 Chapter"
           onClick={onAddChapter}
         >
-          <Plus size={18} />
+          +1 Chapter
         </button>
         <button
-          className="rounded-full bg-violet-50 hover:bg-violet-200 text-violet-700 px-2 py-1 transition hover-scale"
+          className="rounded bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 py-1 border"
           title="Edit"
           onClick={onEdit}
         >
-          <Edit size={18} />
+          Edit
         </button>
         <button
-          className="rounded-full bg-slate-200 hover:bg-violet-200 text-violet-700 px-2 py-1 transition hover-scale"
+          className="rounded bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 py-1 border"
           title="Favorite"
           onClick={onToggleFavorite}
         >
-          <Star size={18} className={title.isFavorite ? "fill-yellow-400 text-yellow-400" : "text-slate-400"} />
+          Fav
         </button>
         <button
-          className="rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 transition hover-scale"
+          className="rounded bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 py-1 border"
           title="Open Reading Site"
           onClick={onOpenSite}
           disabled={!title.siteUrl}
         >
-          <ArrowRight size={18} />
+          Open
         </button>
         <button
-          className="rounded-full bg-pinkAccent/20 hover:bg-pinkAccent text-pinkAccent px-2 py-1 transition hover-scale"
+          className="rounded bg-gray-200 hover:bg-red-200 text-red-600 px-2 py-1 border"
           title="Delete"
           onClick={onDelete}
         >
-          <Trash2 size={18} />
+          Delete
         </button>
       </div>
     </div>
   );
 };
+

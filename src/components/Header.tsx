@@ -1,10 +1,6 @@
 
 import React, { ChangeEvent } from "react";
-import { Moon, Sun, Upload, Download, Book } from "lucide-react";
-import { exportTitlesAsJson } from "@/utils/localStore";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { ManhwaTitle } from "@/types";
 
 type HeaderProps = {
   onDarkToggle: () => void;
@@ -22,37 +18,31 @@ export const Header: React.FC<HeaderProps> = ({
   totalCount,
 }) => {
   return (
-    <header className="w-full px-0 py-4 bg-gradient-to-br from-violet-50 via-pinkAccent/10 to-blue-100 dark:bg-main-gradient-dark rounded-b-lg flex items-center justify-between mb-4 shadow-dashboard animate-fade-in">
-      <div className="flex items-center gap-3">
-        <Book size={28} className="text-violet-700 dark:text-pinkAccent" />
-        <span className="font-extrabold text-2xl tracking-tight font-sans text-violet-800 dark:text-pinkAccent drop-shadow-sm">
-          My Manhwa Tracker
+    <header className="w-full px-0 py-5 bg-white border-b shadow-sm flex items-center justify-between mb-4">
+      <div className="flex items-center gap-4">
+        <span className="font-bold text-xl tracking-tight text-gray-900">
+          Manhwa Tracker
         </span>
-        <span className="ml-4 rounded-full bg-slate-200 px-3 py-1 text-sm text-slate-700">
+        <span className="ml-4 rounded bg-gray-100 px-3 py-1 text-sm text-gray-500 border border-gray-200">
           {totalCount} titles
         </span>
       </div>
       <div className="flex items-center gap-2">
         <Button
-          variant="ghost"
-          size="icon"
+          variant="outline"
+          size="sm"
           onClick={onDarkToggle}
-          className={cn(
-            "rounded-full hover-scale transition",
-            isDark ? "bg-black/20" : "bg-white/50"
-          )}
-          title="Toggle Dark Mode"
+          className="rounded px-3 border"
         >
-          {isDark ? <Sun size={20} /> : <Moon size={20} />}
+          {isDark ? "Light Mode" : "Dark Mode"}
         </Button>
         <Button
-          variant="ghost"
-          size="icon"
+          variant="outline"
+          size="sm"
           onClick={onExport}
-          className="rounded-full hover-scale"
-          title="Export Titles as JSON"
+          className="rounded px-3 border"
         >
-          <Download size={20} />
+          Export JSON
         </Button>
         <label>
           <input
@@ -62,15 +52,15 @@ export const Header: React.FC<HeaderProps> = ({
             className="hidden"
           />
           <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full hover-scale"
-            title="Import Titles from JSON"
+            variant="outline"
+            size="sm"
+            className="rounded px-3 border"
           >
-            <Upload size={20} />
+            Import JSON
           </Button>
         </label>
       </div>
     </header>
   );
 };
+

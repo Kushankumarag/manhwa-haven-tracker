@@ -170,7 +170,7 @@ export default function Index() {
   const displayed = [...favs, ...nonFavs];
 
   return (
-    <div className="min-h-screen bg-background dark:bg-[#1a1625] font-sans">
+    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
       <Header
         onDarkToggle={() => setIsDark((v: boolean) => !v)}
         isDark={isDark}
@@ -178,9 +178,9 @@ export default function Index() {
         onImport={handleImport}
         totalCount={titles.length}
       />
-      <main className="max-w-7xl mx-auto px-4 pb-10">
+      <main className="max-w-4xl mx-auto px-2 pb-8">
         {/* Add & Filter toolbar */}
-        <div className="flex flex-col md:flex-row gap-2 justify-between mt-2 mb-6 animate-fade-in">
+        <div className="flex flex-col md:flex-row gap-2 justify-between mt-2 mb-6">
           <div className="flex flex-wrap items-center gap-2">
             <Button
               onClick={() => {
@@ -188,21 +188,19 @@ export default function Index() {
                 setEditingTitle(null);
                 setIsEditing(false);
               }}
-              className="rounded-full px-3 flex items-center gap-2 bg-violet-500 hover:bg-violet-600"
+              className="px-3 py-2 bg-gray-900 text-white rounded border border-gray-700 hover:bg-gray-800"
             >
-              <Plus size={20} /> <span>Add New</span>
+              Add New
             </Button>
             <div className="flex items-center gap-2">
               {TABS.map((t) => (
                 <Button
                   key={t.id}
-                  variant={tab === t.id ? "secondary" : "ghost"}
-                  className={`rounded-full px-4 py-1 ${
-                    tab === t.id ? "font-semibold shadow" : ""
-                  }`}
+                  variant="ghost"
+                  className={`px-4 py-2 rounded border ${tab === t.id ? "bg-gray-200 font-semibold" : "bg-transparent"} `}
                   onClick={() => setTab(t.id)}
                 >
-                  {t.label}
+                  {typeof t.label === "object" ? "Favorites" : t.label}
                 </Button>
               ))}
             </div>
@@ -212,13 +210,13 @@ export default function Index() {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by title / tag / type"
-              className="w-48 md:w-56 rounded-full bg-muted"
+              placeholder="Search title / tag / type"
+              className="w-44 md:w-56 rounded border bg-white"
             />
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value as TitleType)}
-              className="rounded-full border bg-muted px-2 py-1"
+              className="rounded border px-2 py-1 bg-white"
             >
               <option value="">All Types</option>
               <option value="Manhwa">Manhwa</option>
@@ -228,7 +226,7 @@ export default function Index() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as TitleStatus)}
-              className="rounded-full border bg-muted px-2 py-1"
+              className="rounded border px-2 py-1 bg-white"
             >
               <option value="">All Statuses</option>
               <option value="Reading">Reading</option>
@@ -238,7 +236,7 @@ export default function Index() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="rounded-full border bg-muted px-2 py-1"
+              className="rounded border px-2 py-1 bg-white"
             >
               {SORTS.map((s) => (
                 <option value={s.id} key={s.id}>{s.label}</option>
@@ -250,12 +248,11 @@ export default function Index() {
         {/* List/Grid Main Content */}
         <section>
           {displayed.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-10 text-slate-400">
-              <Book size={56} className="mb-3 opacity-50" />
-              <p className="text-lg">No tracked titles. Click <b>Add New</b> to get started!</p>
+            <div className="flex flex-col items-center justify-center p-10 text-gray-400">
+              <p className="text-lg">No tracked titles. Click <b>Add New</b> to get started.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {displayed.map((t) => (
                 <TitleCard
                   key={t.id}
