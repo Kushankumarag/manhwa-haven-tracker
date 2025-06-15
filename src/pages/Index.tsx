@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { ManhwaTitle, TitleStatus, TitleType } from "@/types";
 import {
@@ -215,7 +214,6 @@ export default function Index() {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by title / tag / type"
               className="w-48 md:w-56 rounded-full bg-muted"
-              startIcon={<Search size={18} />}
             />
             <select
               value={typeFilter}
