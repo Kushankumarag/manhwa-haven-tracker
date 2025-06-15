@@ -1,7 +1,14 @@
 import React from "react";
 import { ManhwaTitle } from "@/types";
 import { ProgressBar } from "./ProgressBar";
-import { Link as LinkIcon } from "lucide-react";
+import { Link as LinkIcon, MoreHorizontal } from "lucide-react";
+import {
+  Menubar,
+  MenubarMenu,
+  MenubarTrigger,
+  MenubarContent,
+  MenubarItem,
+} from "@/components/ui/menubar";
 
 type Props = {
   title: ManhwaTitle;
@@ -31,7 +38,7 @@ export const TitleCard: React.FC<Props> = ({
   onDelete,
   onOpenSite,
   onToggleFavorite,
-  onCopySiteUrl, // <-- new prop
+  onCopySiteUrl,
 }) => {
   const total = title.totalChapters || 0;
   const progress = total ? Math.min(title.chapter, total) : title.chapter;
@@ -43,7 +50,32 @@ export const TitleCard: React.FC<Props> = ({
   };
 
   return (
-    <div className="bg-card rounded-2xl shadow-lg flex flex-col h-full hover:scale-[1.012] hover:shadow-xl transition-all duration-200 p-3 md:p-3 border-0 min-w-0">
+    <div className="bg-card rounded-2xl shadow-lg flex flex-col h-full hover:scale-[1.012] hover:shadow-xl transition-all duration-200 p-3 md:p-3 border-0 min-w-0 relative">
+      {/* 3-dot menu top right */}
+      <div className="absolute top-2 right-2 z-10">
+        <Menubar>
+          <MenubarMenu>
+            <MenubarTrigger asChild>
+              <button
+                className="p-1 rounded-full hover:bg-muted transition"
+                aria-label="More actions"
+                type="button"
+              >
+                <MoreHorizontal size={20} />
+              </button>
+            </MenubarTrigger>
+            <MenubarContent align="end">
+              <MenubarItem
+                className="text-destructive"
+                onClick={onDelete}
+              >
+                Delete
+              </MenubarItem>
+              {/* You can add more menu items if desired, e.g., Edit/Fav */}
+            </MenubarContent>
+          </MenubarMenu>
+        </Menubar>
+      </div>
       {/* Cover image */}
       <div
         className="w-full aspect-[4/5] bg-secondary rounded-xl mb-2 flex items-center justify-center overflow-hidden"
@@ -89,7 +121,7 @@ export const TitleCard: React.FC<Props> = ({
           {total ? <>/{total}</> : ""}
         </span>
       </div>
-      {/* Actions */}
+      {/* Actions row (remove delete btn) */}
       <div className="flex gap-1 mt-auto items-center">
         <button
           className="rounded-full bg-primary/10 text-primary px-2 py-0.5 text-xs font-medium hover:bg-primary/20 transition"
@@ -124,7 +156,7 @@ export const TitleCard: React.FC<Props> = ({
         >
           Open
         </button>
-        {/* New: Copy URL button (visible only if siteUrl exists) */}
+        {/* Copy URL button */}
         {title.siteUrl && onCopySiteUrl && (
           <button
             className="rounded-full bg-secondary text-foreground px-2 py-0.5 text-xs font-medium hover:bg-primary/20 transition flex items-center gap-1"
@@ -136,13 +168,7 @@ export const TitleCard: React.FC<Props> = ({
             <span className="sr-only">Copy URL</span>
           </button>
         )}
-        <button
-          className="rounded-full bg-destructive text-destructive-foreground px-2 py-0.5 text-xs font-medium hover:bg-red-800 transition"
-          title="Delete"
-          onClick={onDelete}
-        >
-          Del
-        </button>
+        {/* Delete button removed from here */}
       </div>
     </div>
   );
