@@ -1,4 +1,3 @@
-
 import React from "react";
 import { ManhwaTitle } from "@/types";
 import { ProgressBar } from "./ProgressBar";
@@ -54,13 +53,14 @@ export const TitleCard: React.FC<Props> = ({
     <div className="bg-card rounded-2xl shadow-lg flex flex-col h-full hover:scale-[1.012] hover:shadow-xl transition-all duration-200 p-3 md:p-3 border-0 min-w-0 relative">
       {/* Cover image with in-corner 3-dot icon */}
       <div className="w-full aspect-[4/5] bg-secondary rounded-xl mb-2 flex items-center justify-center overflow-hidden relative">
-        {/* 3-dot menu top right, now inside the card, so corners show fully */}
+        {/* 3-dot menu top right, as just '...' icon */}
         <div className="absolute top-2 right-2 z-10">
           <Menubar>
             <MenubarMenu>
               <MenubarTrigger asChild>
                 <button
-                  className="p-1 rounded-full transition bg-transparent hover:bg-gray-200/60 focus:bg-gray-200/70"
+                  className="outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
+                  style={{ background: "none", border: "none", padding: 0, margin: 0, boxShadow: "none" }}
                   aria-label="More actions"
                   type="button"
                 >
