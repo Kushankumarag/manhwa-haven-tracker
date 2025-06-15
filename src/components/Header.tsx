@@ -18,12 +18,12 @@ export const Header: React.FC<HeaderProps> = ({
   totalCount,
 }) => {
   return (
-    <header className="w-full px-0 py-5 bg-white border-b shadow-sm flex items-center justify-between mb-4">
+    <header className="w-full px-0 py-5 bg-white dark:bg-neutral-900 border-b shadow-sm flex items-center justify-between mb-4">
       <div className="flex items-center gap-4">
-        <span className="font-bold text-xl tracking-tight text-gray-900">
+        <span className="font-bold text-xl tracking-tight text-gray-900 dark:text-white">
           Manhwa Tracker
         </span>
-        <span className="ml-4 rounded bg-gray-100 px-3 py-1 text-sm text-gray-500 border border-gray-200">
+        <span className="ml-4 rounded bg-gray-100 dark:bg-neutral-800 px-3 py-1 text-sm text-gray-500 dark:text-gray-300 border border-gray-200 dark:border-neutral-700">
           {totalCount} titles
         </span>
       </div>
@@ -63,4 +63,3 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
-

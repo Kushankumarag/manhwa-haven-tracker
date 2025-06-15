@@ -36,7 +36,7 @@ export default function Index() {
   const [titles, setTitles] = useState<ManhwaTitle[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingTitle, setEditingTitle] = useState<ManhwaTitle | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(isEditing);
 
   const [tab, setTab] = useState("all");
   const [sortBy, setSortBy] = useState("recent");
@@ -170,7 +170,7 @@ export default function Index() {
   const displayed = [...favs, ...nonFavs];
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
+    <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-white font-sans">
       <Header
         onDarkToggle={() => setIsDark((v: boolean) => !v)}
         isDark={isDark}
@@ -248,7 +248,7 @@ export default function Index() {
         {/* List/Grid Main Content */}
         <section>
           {displayed.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-10 text-gray-400">
+            <div className="flex flex-col items-center justify-center p-10 text-gray-400 dark:text-gray-200">
               <p className="text-lg">No tracked titles. Click <b>Add New</b> to get started.</p>
             </div>
           ) : (

@@ -1,8 +1,8 @@
-
 import React, { useState } from "react";
 import {
   Dialog,
-  DialogContent
+  DialogContent,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -91,49 +91,48 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
-        <div className="p-6 w-full max-w-md mx-auto bg-white rounded border">
+        <DialogTitle className="mb-4 text-gray-900 dark:text-white">{isEditing ? "Edit Title" : "Add New Title"}</DialogTitle>
+        <div className="p-6 w-full max-w-md mx-auto bg-white dark:bg-neutral-900 rounded border border-gray-200 dark:border-neutral-700 text-gray-900 dark:text-white">
           <form className="space-y-4" onSubmit={handleSubmit}>
-            <h2 className="font-semibold text-base mb-2">{isEditing ? "Edit Title" : "Add New Title"}</h2>
-
             <div>
-              <label className="block font-medium mb-1">Title</label>
+              <label className="block font-medium mb-1 text-gray-900 dark:text-white">Title</label>
               <Input
                 type="text"
                 required
                 placeholder="e.g. Solo Leveling"
                 value={form.title}
                 onChange={(e) => handleChange("title", e.target.value)}
-                className="bg-gray-100"
+                className="bg-gray-100 dark:bg-neutral-800 text-gray-900 dark:text-white"
               />
             </div>
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="block font-medium mb-1">Current Chapter</label>
+                <label className="block font-medium mb-1 text-gray-900 dark:text-white">Current Chapter</label>
                 <Input
                   type="number"
                   min={1}
                   value={form.chapter}
                   onChange={(e) => handleChange("chapter", e.target.value)}
-                  className="bg-gray-100"
+                  className="bg-gray-100 dark:bg-neutral-800 text-gray-900 dark:text-white"
                 />
               </div>
               <div className="flex-1">
-                <label className="block font-medium mb-1">Total Chapters</label>
+                <label className="block font-medium mb-1 text-gray-900 dark:text-white">Total Chapters</label>
                 <Input
                   type="number"
                   min={1}
                   value={form.totalChapters || ""}
                   placeholder="Optional"
                   onChange={(e) => handleChange("totalChapters", e.target.value)}
-                  className="bg-gray-100"
+                  className="bg-gray-100 dark:bg-neutral-800 text-gray-900 dark:text-white"
                 />
               </div>
             </div>
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="block font-medium mb-1">Type</label>
+                <label className="block font-medium mb-1 text-gray-900 dark:text-white">Type</label>
                 <select
-                  className="w-full p-2 rounded border bg-gray-100"
+                  className="w-full p-2 rounded border bg-gray-100 dark:bg-neutral-800 text-gray-900 dark:text-white"
                   value={form.type}
                   onChange={(e) => handleChange("type", e.target.value as TitleType)}
                 >
@@ -143,9 +142,9 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
                 </select>
               </div>
               <div className="flex-1">
-                <label className="block font-medium mb-1">Status</label>
+                <label className="block font-medium mb-1 text-gray-900 dark:text-white">Status</label>
                 <select
-                  className="w-full p-2 rounded border bg-gray-100"
+                  className="w-full p-2 rounded border bg-gray-100 dark:bg-neutral-800 text-gray-900 dark:text-white"
                   value={form.status}
                   onChange={(e) => handleChange("status", e.target.value as TitleStatus)}
                 >
@@ -156,27 +155,27 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
               </div>
             </div>
             <div>
-              <label className="block font-medium mb-1">Reading Site URL</label>
+              <label className="block font-medium mb-1 text-gray-900 dark:text-white">Reading Site URL</label>
               <Input
                 type="url"
                 value={form.siteUrl || ""}
                 placeholder="https://example.com"
                 onChange={(e) => handleChange("siteUrl", e.target.value)}
-                className="bg-gray-100"
+                className="bg-gray-100 dark:bg-neutral-800 text-gray-900 dark:text-white"
               />
             </div>
             <div>
-              <label className="block font-medium mb-1">Cover Image URL</label>
+              <label className="block font-medium mb-1 text-gray-900 dark:text-white">Cover Image URL</label>
               <Input
                 type="url"
                 value={form.coverUrl || ""}
                 placeholder="Paste image URL if available"
                 onChange={(e) => handleChange("coverUrl", e.target.value)}
-                className="bg-gray-100"
+                className="bg-gray-100 dark:bg-neutral-800 text-gray-900 dark:text-white"
               />
             </div>
             <div>
-              <label className="block font-medium mb-1">Tags (comma separated)</label>
+              <label className="block font-medium mb-1 text-gray-900 dark:text-white">Tags (comma separated)</label>
               <Input
                 type="text"
                 value={form.tags.join(", ")}
@@ -188,14 +187,14 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
                     .map((t) => t.trim())
                     .filter(Boolean)
                 )}
-                className="bg-gray-100"
+                className="bg-gray-100 dark:bg-neutral-800 text-gray-900 dark:text-white"
               />
             </div>
             <div className="flex justify-end gap-2 mt-4">
               <Button type="button" variant="secondary" onClick={onClose} className="rounded px-4">
                 Cancel
               </Button>
-              <Button type="submit" className="rounded px-4 bg-gray-900 text-white">
+              <Button type="submit" className="rounded px-4 bg-gray-900 dark:bg-neutral-700 text-white">
                 {isEditing ? "Save" : "Add"}
               </Button>
             </div>
@@ -205,4 +204,3 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
     </Dialog>
   );
 };
-
