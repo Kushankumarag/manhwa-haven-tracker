@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { MoreVertical } from "lucide-react";
+import { Link } from "react-router-dom";
 
 type HeaderProps = {
   onDarkToggle: () => void;
@@ -40,6 +41,9 @@ export const Header: React.FC<HeaderProps> = ({
         <span className="ml-3 rounded-full bg-card px-4 py-1 text-base text-muted-foreground font-medium shadow-sm border-0">
           {totalCount} titles
         </span>
+        <Link to="/stats" className="ml-4 text-primary font-semibold underline underline-offset-4 hover:text-primary/80 text-base">
+          Stats
+        </Link>
       </div>
       <div className="flex items-center gap-3">
         {/* Dark Light Toggle */}

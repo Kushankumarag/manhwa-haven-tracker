@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Check, Plus, Star, Search, Book, X, Link as LinkIcon } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { History, Grid2x2, Grid3x3, Grid4x4, List } from "lucide-react";
 
 function generateId() {
   return Math.random().toString(36).slice(2, 10) + Date.now();
@@ -45,6 +46,7 @@ export default function Index() {
   const [typeFilter, setTypeFilter] = useState<TitleType | "">("");
   const [statusFilter, setStatusFilter] = useState<TitleStatus | "">("");
   const [isDark, setIsDark] = useDarkMode();
+  const [grid, setGrid] = useState(4); // New: 2, 3, 4, or 6
 
   useEffect(() => {
     setTitles(loadTitlesFromStorage());
@@ -134,6 +136,14 @@ export default function Index() {
     setSearch("");
   }
 
+  // Grid toggle options
+  const GRID_OPTIONS = [
+    { value: 2, icon: List, label: "2" },
+    { value: 3, icon: Grid2x2, label: "3" },
+    { value: 4, icon: Grid3x3, label: "4" },
+    { value: 6, icon: Grid4x4, label: "6" },
+  ];
+
   // Filtering logic
   let filtered = titles;
   if (tab === "reading")
@@ -217,6 +227,19 @@ export default function Index() {
                 </Button>
               ))}
             </div>
+            {/* Grid Toggle Buttons */}
+            <div className="flex items-center gap-1 ml-4">
+              {GRID_OPTIONS.map(opt => (
+                <button
+                  key={opt.value}
+                  className={`rounded-full p-1.5 border ${grid === opt.value ? "bg-primary text-white border-primary" : "bg-card text-muted-foreground border-muted-foreground/20"} transition hover:bg-primary/10`}
+                  title={`Show ${opt.value} columns`}
+                  onClick={() => setGrid(opt.value)}
+                >
+                  <opt.icon size={18} />
+                </button>
+              ))}
+            </div>
           </div>
           {/* Filters/Search */}
           <div className="flex flex-wrap gap-3 items-center">
@@ -283,7 +306,15 @@ export default function Index() {
               <p className="text-lg">No tracked titles. Click <b>Add New</b> to get started.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4 md:gap-6">
+            <div className={
+              grid === 2
+                ? "grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6"
+                : grid === 3
+                ? "grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6"
+                : grid === 4
+                ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6"
+                : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4 md:gap-6"
+            }>
               {displayed.map((t) => (
                 <TitleCard
                   key={t.id}
@@ -293,7 +324,6 @@ export default function Index() {
                   onDelete={() => onDelete(t.id)}
                   onOpenSite={() => onOpenSite(t)}
                   onToggleFavorite={() => onToggleFavorite(t.id)}
-                  // New prop: copySiteUrl callback
                   onCopySiteUrl={() => {
                     if (t.siteUrl) {
                       navigator.clipboard.writeText(t.siteUrl);
