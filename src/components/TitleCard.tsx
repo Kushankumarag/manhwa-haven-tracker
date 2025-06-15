@@ -53,14 +53,14 @@ export const TitleCard: React.FC<Props> = ({
     <div className="bg-card rounded-2xl shadow-lg flex flex-col h-full hover:scale-[1.012] hover:shadow-xl transition-all duration-200 p-3 md:p-3 border-0 min-w-0 relative">
       {/* Cover image with in-corner 3-dot icon */}
       <div className="w-full aspect-[4/5] bg-secondary rounded-xl mb-2 flex items-center justify-center overflow-hidden relative">
-        {/* 3-dot menu top right, as just '...' icon */}
+        {/* 3-dot menu top right, as just '...' icon with no background */}
         <div className="absolute top-2 right-2 z-10">
           <Menubar>
             <MenubarMenu>
               <MenubarTrigger asChild>
                 <button
-                  className="outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
-                  style={{ background: "none", border: "none", padding: 0, margin: 0, boxShadow: "none" }}
+                  className="outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-0 ring-offset-transparent p-0 m-0 bg-transparent border-none shadow-none"
+                  style={{ background: "none", border: "none", boxShadow: "none", padding: 0, margin: 0 }}
                   aria-label="More actions"
                   type="button"
                 >
