@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Check, Plus, Star, Search, Book, X, Link as LinkIcon } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { History, Grid2x2, Grid3x3, Grid4x4, List } from "lucide-react";
+import { History, Grid2x2, Grid3x3, List } from "lucide-react";
 
 function generateId() {
   return Math.random().toString(36).slice(2, 10) + Date.now();
@@ -141,7 +141,7 @@ export default function Index() {
     { value: 2, icon: List, label: "2" },
     { value: 3, icon: Grid2x2, label: "3" },
     { value: 4, icon: Grid3x3, label: "4" },
-    { value: 6, icon: Grid4x4, label: "6" },
+    { value: 6, icon: Grid3x3, label: "6" }, // Use Grid3x3 icon for 6 columns as fallback
   ];
 
   // Filtering logic
