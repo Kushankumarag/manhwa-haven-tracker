@@ -18,12 +18,12 @@ export const Header: React.FC<HeaderProps> = ({
   totalCount,
 }) => {
   return (
-    <header className="w-full px-0 py-5 bg-[#121212] border-b-0 shadow flex items-center justify-between mb-8">
+    <header className="w-full px-0 py-5 bg-popover border-b-0 shadow flex items-center justify-between mb-8 transition-colors duration-200">
       <div className="flex items-center gap-4">
-        <span className="font-black text-[1.75rem] tracking-tight text-white">
+        <span className="font-black text-[1.75rem] tracking-tight text-foreground">
           Manhwa Tracker
         </span>
-        <span className="ml-4 rounded bg-[#181818] px-3 py-1 text-base text-gray-300 border-0 font-medium">
+        <span className="ml-4 rounded bg-card px-3 py-1 text-base text-muted-foreground border-0 font-medium">
           {totalCount} titles
         </span>
       </div>
@@ -32,7 +32,7 @@ export const Header: React.FC<HeaderProps> = ({
           variant="outline"
           size="sm"
           onClick={onDarkToggle}
-          className="rounded-md px-3 border-0 bg-[#232323] text-white hover:bg-[#333]"
+          className="rounded-md px-3 border-0 bg-secondary text-foreground hover:bg-card"
         >
           {isDark ? "Light Mode" : "Dark Mode"}
         </Button>
@@ -40,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
           variant="outline"
           size="sm"
           onClick={onExport}
-          className="rounded-md px-3 border-0 bg-[#292929] text-white hover:bg-[#444]"
+          className="rounded-md px-3 border-0 bg-card text-foreground hover:bg-secondary"
         >
           Export JSON
         </Button>

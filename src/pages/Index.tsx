@@ -170,7 +170,7 @@ export default function Index() {
   const displayed = [...favs, ...nonFavs];
 
   return (
-    <div className="min-h-screen bg-[#181818] text-white font-sans">
+    <div className="min-h-screen bg-background text-foreground font-sans transition-colors duration-200">
       <Header
         onDarkToggle={() => setIsDark((v: boolean) => !v)}
         isDark={isDark}
@@ -254,7 +254,7 @@ export default function Index() {
         {/* List/Grid Main Content */}
         <section>
           {displayed.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-10 text-gray-400">
+            <div className="flex flex-col items-center justify-center p-10 text-muted-foreground">
               <p className="text-lg">No tracked titles. Click <b>Add New</b> to get started.</p>
             </div>
           ) : (
