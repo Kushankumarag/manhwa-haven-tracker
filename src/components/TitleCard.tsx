@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+
+import React from "react";
 import { ManhwaTitle } from "@/types";
 import { ProgressBar } from "./ProgressBar";
-import { Link as LinkIcon, MoreHorizontal, Image as ImageIcon } from "lucide-react";
+import { Link as LinkIcon, MoreHorizontal } from "lucide-react";
 import {
   Menubar,
   MenubarMenu,
@@ -9,11 +10,6 @@ import {
   MenubarContent,
   MenubarItem,
 } from "@/components/ui/menubar";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-} from "@/components/ui/dialog";
 
 type Props = {
   title: ManhwaTitle;
@@ -56,42 +52,45 @@ export const TitleCard: React.FC<Props> = ({
 
   return (
     <div className="bg-card rounded-2xl shadow-lg flex flex-col h-full hover:scale-[1.012] hover:shadow-xl transition-all duration-200 p-3 md:p-3 border-0 min-w-0 relative">
-      {/* 3-dot menu top right */}
-      <div className="absolute top-2 right-2 z-10">
-        <Menubar>
-          <MenubarMenu>
-            <MenubarTrigger asChild>
-              <button
-                className="p-1 rounded-full transition bg-transparent hover:bg-transparent focus:bg-transparent"
-                aria-label="More actions"
-                type="button"
-              >
-                <MoreHorizontal size={20} />
-              </button>
-            </MenubarTrigger>
-            <MenubarContent align="end">
-              <MenubarItem
-                className="text-destructive"
-                onClick={onDelete}
-              >
-                Delete
-              </MenubarItem>
-              {/* More items can be added here if needed */}
-            </MenubarContent>
-          </MenubarMenu>
-        </Menubar>
-      </div>
-      {/* Cover image (no modal, no icon overlay) */}
-      <div
-        className="w-full aspect-[4/5] bg-secondary rounded-xl mb-2 flex items-center justify-center overflow-hidden"
-        style={{
-          backgroundImage: title.coverUrl ? `url(${title.coverUrl})` : undefined,
-          backgroundSize: title.coverUrl ? "cover" : undefined,
-          backgroundPosition: title.coverUrl ? "center" : undefined,
-        }}
-      >
+      {/* Cover image with in-corner 3-dot icon */}
+      <div className="w-full aspect-[4/5] bg-secondary rounded-xl mb-2 flex items-center justify-center overflow-hidden relative">
+        {/* 3-dot menu top right, now inside the card, so corners show fully */}
+        <div className="absolute top-2 right-2 z-10">
+          <Menubar>
+            <MenubarMenu>
+              <MenubarTrigger asChild>
+                <button
+                  className="p-1 rounded-full transition bg-transparent hover:bg-gray-200/60 focus:bg-gray-200/70"
+                  aria-label="More actions"
+                  type="button"
+                >
+                  <MoreHorizontal size={20} />
+                </button>
+              </MenubarTrigger>
+              <MenubarContent align="end">
+                <MenubarItem
+                  className="text-destructive"
+                  onClick={onDelete}
+                >
+                  Delete
+                </MenubarItem>
+                {/* More items can be added here if needed */}
+              </MenubarContent>
+            </MenubarMenu>
+          </Menubar>
+        </div>
+        {/* Show cover image as background if present */}
+        <div
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundImage: title.coverUrl ? `url(${title.coverUrl})` : undefined,
+            backgroundSize: title.coverUrl ? "cover" : undefined,
+            backgroundPosition: title.coverUrl ? "center" : undefined,
+            borderRadius: 'inherit'
+          }}
+        />
         {!title.coverUrl && (
-          <span className="text-base text-muted-foreground select-none">No Image</span>
+          <span className="relative z-0 text-base text-muted-foreground select-none">No Image</span>
         )}
       </div>
       {/* Info */}
