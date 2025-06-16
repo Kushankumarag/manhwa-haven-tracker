@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -85,6 +86,8 @@
 @layer base {
   html {
     font-family: 'Inter', 'Poppins', ui-sans-serif, system-ui, sans-serif; /* Modern font */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    width: 100%;
   }
   * {
     border: 0 !important; /* Remove all borders globally except where specifically overridden */
@@ -93,10 +96,55 @@
   body {
     @apply bg-background text-foreground;
     min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
     background: var(--background);
+    /* Ensure full coverage on mobile */
+    position: relative;
   }
+  
+  /* Ensure dark mode covers everything including overscroll areas */
+  html.dark,
+  html.dark body,
+  .dark,
+  .dark body {
+    background-color: hsl(242 34% 16%) !important; /* Force dark background */
+    background: hsl(242 34% 16%) !important;
+  }
+  
   .dark body, .dark * {
     @apply text-white;
+  }
+  
+  /* Prevent horizontal overflow on all containers */
+  #root {
+    width: 100%;
+    overflow-x: hidden;
+    min-height: 100vh;
+    background: var(--background);
+  }
+  
+  /* Additional mobile-specific fixes */
+  @media (max-width: 768px) {
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      position: relative;
+    }
+    
+    /* Ensure dark background extends beyond viewport */
+    html.dark::before,
+    .dark::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: -100px;
+      right: -100px;
+      bottom: 0;
+      background: hsl(242 34% 16%);
+      z-index: -999;
+      pointer-events: none;
+    }
   }
 }
 
