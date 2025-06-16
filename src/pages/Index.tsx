@@ -197,123 +197,146 @@ export default function Index() {
         onImport={handleImport}
         totalCount={titles.length}
       />
-      <main className="max-w-6xl mx-auto px-2 pb-8">
-        {/* Add & Filter toolbar */}
-        <div className="flex flex-col md:flex-row gap-4 justify-between mt-2 mb-8">
-          <div className="flex flex-wrap items-center gap-3">
-            <Button
-              onClick={() => {
-                setShowAddModal(true);
-                setEditingTitle(null);
-                setIsEditing(false);
-              }}
-              className="px-6 py-2 bg-primary text-white rounded-full shadow-md font-semibold text-base hover:bg-primary/80 transition-all"
-            >
-              Add New
-            </Button>
-            <div className="flex items-center gap-2">
-              {TABS.map((t) => (
-                <Button
-                  key={t.id}
-                  variant="ghost"
-                  className={`
-                    px-5 py-2 rounded-full
-                    ${tab === t.id ? "bg-primary text-white font-semibold shadow-sm" : "bg-transparent text-muted-foreground"}
-                    transition text-base
-                  `}
-                  onClick={() => setTab(t.id)}
-                >
-                  {typeof t.label === "object" ? "Favorites" : t.label}
-                </Button>
-              ))}
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 pb-8">
+        {/* Add & Filter toolbar - Improved mobile layout */}
+        <div className="flex flex-col gap-4 mt-4 mb-6">
+          {/* Top row: Add button and tabs */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between items-start sm:items-center">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+              <Button
+                onClick={() => {
+                  setShowAddModal(true);
+                  setEditingTitle(null);
+                  setIsEditing(false);
+                }}
+                className="px-4 sm:px-6 py-2 bg-primary text-white rounded-full shadow-md font-semibold text-sm sm:text-base hover:bg-primary/80 transition-all"
+              >
+                <Plus size={16} className="mr-1 sm:mr-2" />
+                Add New
+              </Button>
+              
+              {/* Tabs - Scrollable on mobile */}
+              <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto pb-2 sm:pb-0">
+                {TABS.map((t) => (
+                  <Button
+                    key={t.id}
+                    variant="ghost"
+                    className={`
+                      px-3 sm:px-5 py-1.5 sm:py-2 rounded-full whitespace-nowrap text-sm sm:text-base
+                      ${tab === t.id ? "bg-primary text-white font-semibold shadow-sm" : "bg-transparent text-muted-foreground"}
+                      transition flex-shrink-0
+                    `}
+                    onClick={() => setTab(t.id)}
+                  >
+                    {t.id === "favorites" ? (
+                      <div className="flex items-center gap-1">
+                        <Star className="text-yellow-400" size={14} />
+                        <span className="hidden sm:inline">Favorites</span>
+                        <span className="sm:hidden">Fav</span>
+                      </div>
+                    ) : (
+                      t.label
+                    )}
+                  </Button>
+                ))}
+              </div>
             </div>
-            {/* Grid Toggle Buttons */}
-            <div className="flex items-center gap-1 ml-4">
+            
+            {/* Grid Toggle Buttons - Better mobile positioning */}
+            <div className="flex items-center gap-1 self-end sm:self-auto">
               {GRID_OPTIONS.map(opt => (
                 <button
                   key={opt.value}
-                  className={`rounded-full p-1.5 border ${grid === opt.value ? "bg-primary text-white border-primary" : "bg-card text-muted-foreground border-muted-foreground/20"} transition hover:bg-primary/10`}
+                  className={`rounded-full p-1.5 sm:p-2 border text-xs sm:text-sm ${grid === opt.value ? "bg-primary text-white border-primary" : "bg-card text-muted-foreground border-muted-foreground/20"} transition hover:bg-primary/10`}
                   title={`Show ${opt.value} columns`}
                   onClick={() => setGrid(opt.value)}
                 >
-                  <opt.icon size={18} />
+                  <opt.icon size={16} />
                 </button>
               ))}
             </div>
           </div>
-          {/* Filters/Search */}
-          <div className="flex flex-wrap gap-3 items-center">
-            <div className="relative w-44 md:w-56">
+          
+          {/* Filters/Search row - Improved mobile layout */}
+          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+            <div className="relative flex-1 sm:flex-none sm:w-44 md:w-56">
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search title / tag / type"
-                className="w-full rounded-full bg-muted text-foreground placeholder:text-muted-foreground shadow-md pr-8"
+                className="w-full rounded-full bg-muted text-foreground placeholder:text-muted-foreground shadow-md pr-10 text-sm"
               />
               {search.length > 0 && (
                 <button
                   type="button"
                   onClick={handleClearSearch}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary focus:outline-none"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary focus:outline-none"
                   aria-label="Clear search"
                   tabIndex={0}
                 >
-                  <X size={18} />
+                  <X size={16} />
                 </button>
               )}
             </div>
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value as TitleType)}
-              className="rounded-full px-5 py-2 bg-muted text-foreground border-0 font-medium shadow-md focus:ring-2 focus:ring-primary/50 transition"
-            >
-              <option value="">All Types</option>
-              <option value="Manhwa">Manhwa</option>
-              <option value="Manhua">Manhua</option>
-              <option value="Manga">Manga</option>
-            </select>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as TitleStatus)}
-              className="rounded-full px-5 py-2 bg-muted text-foreground border-0 font-medium shadow-md focus:ring-2 focus:ring-primary/50 transition"
-            >
-              <option value="">All Statuses</option>
-              <option value="Reading">Reading</option>
-              <option value="Completed">Completed</option>
-              <option value="Planned">Planned</option>
-            </select>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="rounded-full px-5 py-2 bg-muted text-foreground border-0 font-medium shadow-md focus:ring-2 focus:ring-primary/50 transition"
-            >
-              {SORTS.map((s) => (
-                <option value={s.id} key={s.id}>{s.label}</option>
-              ))}
-            </select>
+            
+            {/* Filter selects - Better mobile layout */}
+            <div className="flex gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value as TitleType)}
+                className="flex-1 sm:flex-none rounded-full px-3 sm:px-5 py-2 bg-muted text-foreground border-0 font-medium shadow-md focus:ring-2 focus:ring-primary/50 transition text-sm"
+              >
+                <option value="">All Types</option>
+                <option value="Manhwa">Manhwa</option>
+                <option value="Manhua">Manhua</option>
+                <option value="Manga">Manga</option>
+              </select>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as TitleStatus)}
+                className="flex-1 sm:flex-none rounded-full px-3 sm:px-5 py-2 bg-muted text-foreground border-0 font-medium shadow-md focus:ring-2 focus:ring-primary/50 transition text-sm"
+              >
+                <option value="">All Status</option>
+                <option value="Reading">Reading</option>
+                <option value="Completed">Completed</option>
+                <option value="Planned">Planned</option>
+              </select>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="flex-1 sm:flex-none rounded-full px-3 sm:px-5 py-2 bg-muted text-foreground border-0 font-medium shadow-md focus:ring-2 focus:ring-primary/50 transition text-sm"
+              >
+                {SORTS.map((s) => (
+                  <option value={s.id} key={s.id}>{s.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
+        
         {/* Section header */}
-        <div className="flex items-center mb-3">
-          <h2 className="text-2xl font-bold border-l-4 border-primary/80 pl-3 py-1">Tracked Titles</h2>
-          {/* New: Filtered result count */}
-          <span className="ml-3 text-sm px-3 py-1 bg-secondary rounded-full text-muted-foreground">{filteredCount} shown</span>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4">
+          <h2 className="text-xl sm:text-2xl font-bold border-l-4 border-primary/80 pl-3 py-1">Tracked Titles</h2>
+          <span className="text-xs sm:text-sm px-2 sm:px-3 py-1 bg-secondary rounded-full text-muted-foreground ml-0 sm:ml-3 self-start">
+            {filteredCount} shown
+          </span>
         </div>
+        
         {/* List/Grid Main Content */}
         <section>
           {displayed.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-12 text-muted-foreground">
-              <p className="text-lg">No tracked titles. Click <b>Add New</b> to get started.</p>
+            <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-muted-foreground">
+              <p className="text-base sm:text-lg text-center">No tracked titles. Click <b>Add New</b> to get started.</p>
             </div>
           ) : (
             <div className={
               grid === 2
-                ? "grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6"
+                ? "grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6"
                 : grid === 3
-                ? "grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6"
+                ? "grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6"
                 : grid === 4
-                ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6"
-                : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4 md:gap-6"
+                ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6"
+                : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6"
             }>
               {displayed.map((t) => (
                 <TitleCard

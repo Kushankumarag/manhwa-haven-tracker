@@ -91,51 +91,53 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-popover p-0 rounded-2xl shadow-xl w-full max-w-md mx-auto border-0 overflow-visible">
-        <DialogTitle className="mb-2 mt-3 px-8 text-2xl font-semibold text-foreground text-center">
+      <DialogContent className="bg-popover p-0 rounded-2xl shadow-xl w-[95vw] max-w-md mx-auto border-0 overflow-visible max-h-[90vh] overflow-y-auto">
+        <DialogTitle className="mb-2 mt-3 px-4 sm:px-8 text-xl sm:text-2xl font-semibold text-foreground text-center">
           {isEditing ? "Edit Title" : "Add New Title"}
         </DialogTitle>
-        <div className="px-8 pb-8 pt-2 w-full max-w-md mx-auto bg-popover rounded-b-2xl shadow-none text-foreground">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+        <div className="px-4 sm:px-8 pb-6 sm:pb-8 pt-2 w-full bg-popover rounded-b-2xl shadow-none text-foreground">
+          <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label className="block font-semibold mb-2 text-foreground">Title</label>
+              <label className="block font-semibold mb-2 text-sm sm:text-base text-foreground">Title</label>
               <Input
                 type="text"
                 required
                 placeholder="e.g. Solo Leveling"
                 value={form.title}
                 onChange={(e) => handleChange("title", e.target.value)}
-                className="bg-muted text-foreground font-medium"
+                className="bg-muted text-foreground font-medium text-sm sm:text-base"
               />
             </div>
-            <div className="flex gap-4">
+            
+            <div className="flex gap-3 sm:gap-4">
               <div className="flex-1">
-                <label className="block font-semibold mb-2 text-foreground">Current Chapter</label>
+                <label className="block font-semibold mb-2 text-sm sm:text-base text-foreground">Current Chapter</label>
                 <Input
                   type="number"
                   min={1}
                   value={form.chapter}
                   onChange={(e) => handleChange("chapter", e.target.value)}
-                  className="bg-muted text-foreground font-medium"
+                  className="bg-muted text-foreground font-medium text-sm sm:text-base"
                 />
               </div>
               <div className="flex-1">
-                <label className="block font-semibold mb-2 text-foreground">Total Chapters</label>
+                <label className="block font-semibold mb-2 text-sm sm:text-base text-foreground">Total Chapters</label>
                 <Input
                   type="number"
                   min={1}
                   value={form.totalChapters || ""}
                   placeholder="Optional"
                   onChange={(e) => handleChange("totalChapters", e.target.value)}
-                  className="bg-muted text-foreground font-medium"
+                  className="bg-muted text-foreground font-medium text-sm sm:text-base"
                 />
               </div>
             </div>
-            <div className="flex gap-4">
+            
+            <div className="flex gap-3 sm:gap-4">
               <div className="flex-1">
-                <label className="block font-semibold mb-2 text-foreground">Type</label>
+                <label className="block font-semibold mb-2 text-sm sm:text-base text-foreground">Type</label>
                 <select
-                  className="w-full p-3 rounded-full bg-muted text-foreground font-medium"
+                  className="w-full p-2 sm:p-3 rounded-full bg-muted text-foreground font-medium text-sm sm:text-base"
                   value={form.type}
                   onChange={(e) => handleChange("type", e.target.value as TitleType)}
                 >
@@ -145,9 +147,9 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
                 </select>
               </div>
               <div className="flex-1">
-                <label className="block font-semibold mb-2 text-foreground">Status</label>
+                <label className="block font-semibold mb-2 text-sm sm:text-base text-foreground">Status</label>
                 <select
-                  className="w-full p-3 rounded-full bg-muted text-foreground font-medium"
+                  className="w-full p-2 sm:p-3 rounded-full bg-muted text-foreground font-medium text-sm sm:text-base"
                   value={form.status}
                   onChange={(e) => handleChange("status", e.target.value as TitleStatus)}
                 >
@@ -157,28 +159,45 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
                 </select>
               </div>
             </div>
+            
             <div>
-              <label className="block font-semibold mb-2 text-foreground">Reading Site URL</label>
+              <label className="block font-semibold mb-2 text-sm sm:text-base text-foreground">Reading Site URL</label>
               <Input
                 type="url"
                 value={form.siteUrl || ""}
                 placeholder="https://example.com"
                 onChange={(e) => handleChange("siteUrl", e.target.value)}
-                className="bg-muted text-foreground font-medium"
+                className="bg-muted text-foreground font-medium text-sm sm:text-base"
               />
             </div>
+            
             <div>
-              <label className="block font-semibold mb-2 text-foreground">Cover Image URL</label>
+              <label className="block font-semibold mb-2 text-sm sm:text-base text-foreground">Cover Image URL</label>
               <Input
                 type="url"
                 value={form.coverUrl || ""}
-                placeholder="Paste image URL if available"
+                placeholder="Paste image URL here"
                 onChange={(e) => handleChange("coverUrl", e.target.value)}
-                className="bg-muted text-foreground font-medium"
+                className="bg-muted text-foreground font-medium text-sm sm:text-base"
               />
+              {form.coverUrl && (
+                <div className="mt-2 p-2 bg-muted/50 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-2">Preview:</p>
+                  <img 
+                    src={form.coverUrl} 
+                    alt="Cover preview" 
+                    className="w-16 h-20 object-cover rounded"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
             </div>
+            
             <div>
-              <label className="block font-semibold mb-2 text-foreground">Tags (comma separated)</label>
+              <label className="block font-semibold mb-2 text-sm sm:text-base text-foreground">Tags (comma separated)</label>
               <Input
                 type="text"
                 value={form.tags.join(", ")}
@@ -190,14 +209,23 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
                     .map((t) => t.trim())
                     .filter(Boolean)
                 )}
-                className="bg-muted text-foreground font-medium"
+                className="bg-muted text-foreground font-medium text-sm sm:text-base"
               />
             </div>
-            <div className="flex justify-end gap-2 mt-6">
-              <Button type="button" variant="secondary" onClick={onClose} className="rounded-full px-6 bg-secondary text-foreground border-0 hover:bg-accent font-medium">
+            
+            <div className="flex justify-end gap-2 sm:gap-3 mt-6 pt-2">
+              <Button 
+                type="button" 
+                variant="secondary" 
+                onClick={onClose} 
+                className="rounded-full px-4 sm:px-6 py-2 bg-secondary text-foreground border-0 hover:bg-accent font-medium text-sm sm:text-base"
+              >
                 Cancel
               </Button>
-              <Button type="submit" className="rounded-full px-6 bg-primary text-white border-0 font-bold hover:bg-primary/80">
+              <Button 
+                type="submit" 
+                className="rounded-full px-4 sm:px-6 py-2 bg-primary text-white border-0 font-bold hover:bg-primary/80 text-sm sm:text-base"
+              >
                 {isEditing ? "Save" : "Add"}
               </Button>
             </div>
