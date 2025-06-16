@@ -5,6 +5,7 @@ import {
   loadTitlesFromStorage,
   exportTitlesAsJson,
   importTitlesFromJson,
+  mergeTitlesWithDuplicateHandling,
 } from "@/utils/localStore";
 import { TitleCard } from "@/components/TitleCard";
 import { AddTitleModal } from "@/components/AddTitleModal";
@@ -123,11 +124,44 @@ export default function Index() {
 
   async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files || e.target.files.length === 0) return;
+    
     try {
       const imported = await importTitlesFromJson(e.target.files[0]);
-      setTitles(imported.map((t) => ({ ...t, lastUpdated: Date.now() })));
-    } catch {
-      alert("Error importing JSON. Please check your file format.");
+      const mergedTitles = mergeTitlesWithDuplicateHandling(titles, imported);
+      const newTitlesCount = mergedTitles.length - titles.length;
+      
+      setTitles(mergedTitles);
+      
+      toast({
+        title: "Import Successful!",
+        description: `${newTitlesCount} new titles imported. Duplicates were automatically skipped.`
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      toast({
+        title: "Import Failed",
+        description: errorMessage,
+        variant: "destructive"
+      });
+    }
+    
+    // Clear the input so the same file can be selected again
+    e.target.value = '';
+  }
+
+  function handleExport() {
+    const success = exportTitlesAsJson(titles);
+    if (success) {
+      toast({
+        title: "Export Successful!",
+        description: "Your manhwa collection has been exported to a JSON file."
+      });
+    } else {
+      toast({
+        title: "Export Failed",
+        description: "There was an error exporting your data. Please try again.",
+        variant: "destructive"
+      });
     }
   }
 
@@ -193,7 +227,7 @@ export default function Index() {
       <Header
         onDarkToggle={() => setIsDark((v: boolean) => !v)}
         isDark={isDark}
-        onExport={() => exportTitlesAsJson(titles)}
+        onExport={handleExport}
         onImport={handleImport}
         totalCount={titles.length}
       />
