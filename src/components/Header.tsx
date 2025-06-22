@@ -1,4 +1,3 @@
-
 import React, { ChangeEvent, useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { MoreVertical, Download, Upload, FileText } from "lucide-react";
@@ -56,11 +55,22 @@ export const Header: React.FC<HeaderProps> = ({
       const file = files[0];
       if (file.type.includes('json') || file.name.toLowerCase().endsWith('.json')) {
         setSelectedFileName(file.name);
-        // Create a synthetic event to pass to onImport
-        const syntheticEvent = {
-          target: { files: [file] }
-        } as ChangeEvent<HTMLInputElement>;
-        onImport(syntheticEvent);
+        
+        // Set the file to the hidden input and trigger the change event
+        if (fileInputRef.current) {
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          fileInputRef.current.files = dataTransfer.files;
+          
+          // Create a proper synthetic event
+          const syntheticEvent = new Event('change', { bubbles: true });
+          Object.defineProperty(syntheticEvent, 'target', {
+            writable: false,
+            value: fileInputRef.current
+          });
+          
+          onImport(syntheticEvent as unknown as ChangeEvent<HTMLInputElement>);
+        }
         setMenuOpen(false);
       } else {
         toast({
