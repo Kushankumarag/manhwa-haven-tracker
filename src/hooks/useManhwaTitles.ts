@@ -16,13 +16,27 @@ function generateId() {
 
 export function useManhwaTitles() {
   const [titles, setTitles] = useState<ManhwaTitle[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setTitles(loadTitlesFromStorage());
+    const loadedTitles = loadTitlesFromStorage();
+    setTitles(loadedTitles);
+    console.log(`Loaded ${loadedTitles.length} titles on app start`);
   }, []);
 
+  // Auto-save to localStorage whenever titles change
   useEffect(() => {
-    saveTitlesToStorage(titles);
+    if (titles.length > 0) {
+      try {
+        saveTitlesToStorage(titles);
+      } catch (error) {
+        toast({
+          title: "Save Failed",
+          description: "Unable to save data. Your changes might be lost.",
+          variant: "destructive"
+        });
+      }
+    }
   }, [titles]);
 
   function handleAddNew(data: Omit<ManhwaTitle, "id" | "lastUpdated">) {
@@ -31,8 +45,14 @@ export function useManhwaTitles() {
       id: generateId(),
       lastUpdated: Date.now(),
       isFavorite: data.isFavorite || false,
+      tags: data.tags || [],
     };
     setTitles((prev) => [newTitle, ...prev]);
+    
+    toast({
+      title: "Title Added",
+      description: `"${newTitle.title}" has been added to your collection.`,
+    });
   }
 
   function handleEdit(editingTitle: ManhwaTitle, data: Omit<ManhwaTitle, "id" | "lastUpdated">) {
@@ -43,10 +63,23 @@ export function useManhwaTitles() {
           : t
       )
     );
+    
+    toast({
+      title: "Title Updated",
+      description: `"${data.title}" has been updated.`,
+    });
   }
 
   function onDelete(id: string) {
+    const titleToDelete = titles.find(t => t.id === id);
     setTitles((prev) => prev.filter((t) => t.id !== id));
+    
+    if (titleToDelete) {
+      toast({
+        title: "Title Deleted",
+        description: `"${titleToDelete.title}" has been removed from your collection.`,
+      });
+    }
   }
 
   function onAddChapter(id: string) {
@@ -80,16 +113,19 @@ export function useManhwaTitles() {
   async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files || e.target.files.length === 0) return;
     
+    setIsLoading(true);
+    
     try {
       const imported = await importTitlesFromJson(e.target.files[0]);
       const mergedTitles = mergeTitlesWithDuplicateHandling(titles, imported);
       const newTitlesCount = mergedTitles.length - titles.length;
+      const duplicatesCount = imported.length - newTitlesCount;
       
       setTitles(mergedTitles);
       
       toast({
-        title: "Import Successful!",
-        description: `${newTitlesCount} new titles imported. Duplicates were automatically skipped.`
+        title: "Import Successful! 🎉",
+        description: `${newTitlesCount} new titles imported${duplicatesCount > 0 ? `. ${duplicatesCount} duplicates were skipped.` : '.'}`
       });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
@@ -98,22 +134,24 @@ export function useManhwaTitles() {
         description: errorMessage,
         variant: "destructive"
       });
+    } finally {
+      setIsLoading(false);
+      // Clear the file input
+      e.target.value = '';
     }
-    
-    e.target.value = '';
   }
 
   function handleExport() {
-    const success = exportTitlesAsJson(titles);
-    if (success) {
+    const result = exportTitlesAsJson(titles);
+    if (result.success) {
       toast({
-        title: "Export Successful!",
-        description: "Your manhwa collection has been exported to a JSON file."
+        title: "Export Successful! 📁",
+        description: `Your collection of ${titles.length} titles has been downloaded.`
       });
     } else {
       toast({
         title: "Export Failed",
-        description: "There was an error exporting your data. Please try again.",
+        description: result.error || "There was an error exporting your data. Please try again.",
         variant: "destructive"
       });
     }
@@ -121,6 +159,7 @@ export function useManhwaTitles() {
 
   return {
     titles,
+    isLoading,
     handleAddNew,
     handleEdit,
     onDelete,
