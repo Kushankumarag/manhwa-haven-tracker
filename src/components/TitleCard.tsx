@@ -1,7 +1,8 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { ManhwaTitle } from "@/types";
 import { ProgressBar } from "./ProgressBar";
+import { ReadingHistory } from "./ReadingHistory";
 import { Link as LinkIcon, MoreHorizontal } from "lucide-react";
 import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem } from "@/components/ui/menubar";
 
@@ -35,6 +36,7 @@ export const TitleCard: React.FC<Props> = ({
   onToggleFavorite,
   onCopySiteUrl
 }) => {
+  const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
   const total = title.totalChapters || 0;
   const progress = total ? Math.min(title.chapter, total) : title.chapter;
   const typeColors: {
@@ -192,6 +194,14 @@ export const TitleCard: React.FC<Props> = ({
           </button>
         )}
       </div>
+
+      {/* Reading History */}
+      <ReadingHistory
+        history={title.readingHistory || []}
+        titleName={title.title}
+        isExpanded={isHistoryExpanded}
+        onToggle={() => setIsHistoryExpanded(!isHistoryExpanded)}
+      />
     </div>
   );
 };

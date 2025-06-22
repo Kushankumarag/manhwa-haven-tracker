@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { ManhwaTitle } from "@/types";
+import { createHistoryEntry } from "@/utils/readingHistory";
 import {
   saveTitlesToStorage,
   loadTitlesFromStorage,
@@ -46,6 +47,11 @@ export function useManhwaTitles() {
       lastUpdated: Date.now(),
       isFavorite: data.isFavorite || false,
       tags: data.tags || [],
+      readingHistory: [
+        createHistoryEntry("added", {
+          description: `Added "${data.title}" to collection`
+        })
+      ]
     };
     setTitles((prev) => [newTitle, ...prev]);
     
@@ -57,11 +63,21 @@ export function useManhwaTitles() {
 
   function handleEdit(editingTitle: ManhwaTitle, data: Omit<ManhwaTitle, "id" | "lastUpdated">) {
     setTitles((prev) =>
-      prev.map((t) =>
-        t.id === editingTitle.id
-          ? { ...t, ...data, lastUpdated: Date.now() }
-          : t
-      )
+      prev.map((t) => {
+        if (t.id === editingTitle.id) {
+          const historyEntry = createHistoryEntry("edited", {
+            description: `Updated title information`
+          });
+          
+          return {
+            ...t,
+            ...data,
+            lastUpdated: Date.now(),
+            readingHistory: [...(t.readingHistory || []), historyEntry]
+          };
+        }
+        return t;
+      })
     );
     
     toast({
@@ -84,11 +100,24 @@ export function useManhwaTitles() {
 
   function onAddChapter(id: string) {
     setTitles((prev) =>
-      prev.map((t) =>
-        t.id === id
-          ? { ...t, chapter: t.chapter + 1, lastUpdated: Date.now() }
-          : t
-      )
+      prev.map((t) => {
+        if (t.id === id) {
+          const newChapter = t.chapter + 1;
+          const historyEntry = createHistoryEntry("chapter_updated", {
+            previousChapter: t.chapter,
+            newChapter: newChapter,
+            description: `Read chapter ${newChapter} of "${t.title}"`
+          });
+          
+          return {
+            ...t,
+            chapter: newChapter,
+            lastUpdated: Date.now(),
+            readingHistory: [...(t.readingHistory || []), historyEntry]
+          };
+        }
+        return t;
+      })
     );
   }
 
@@ -102,11 +131,23 @@ export function useManhwaTitles() {
 
   function onMarkAsReading(id: string) {
     setTitles((prev) =>
-      prev.map((t) =>
-        t.id === id
-          ? { ...t, status: "Reading", lastUpdated: Date.now() }
-          : t
-      )
+      prev.map((t) => {
+        if (t.id === id) {
+          const historyEntry = createHistoryEntry("status_changed", {
+            previousStatus: t.status,
+            newStatus: "Reading",
+            description: `Changed status from ${t.status} to Reading`
+          });
+          
+          return {
+            ...t,
+            status: "Reading" as const,
+            lastUpdated: Date.now(),
+            readingHistory: [...(t.readingHistory || []), historyEntry]
+          };
+        }
+        return t;
+      })
     );
   }
 
@@ -157,6 +198,21 @@ export function useManhwaTitles() {
     }
   }
 
+  function handleQRImport(importedTitles: ManhwaTitle[]) {
+    const mergedTitles = mergeTitlesWithDuplicateHandling(titles, importedTitles);
+    const newTitlesCount = mergedTitles.length - titles.length;
+    const duplicatesCount = importedTitles.length - newTitlesCount;
+    
+    setTitles(mergedTitles);
+    
+    if (duplicatesCount > 0) {
+      toast({
+        title: "QR Sync Complete",
+        description: `${newTitlesCount} new titles imported, ${duplicatesCount} duplicates skipped`
+      });
+    }
+  }
+
   return {
     titles,
     isLoading,
@@ -168,5 +224,6 @@ export function useManhwaTitles() {
     onMarkAsReading,
     handleImport,
     handleExport,
+    handleQRImport,
   };
 }

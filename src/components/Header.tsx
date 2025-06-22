@@ -1,14 +1,16 @@
 import React, { ChangeEvent, useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Download, Upload, FileText } from "lucide-react";
+import { MoreVertical, Download, Upload, FileText, QrCode, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import { isPINEnabled, setPIN, clearPIN } from "@/utils/pinSecurity";
 
 type HeaderProps = {
   onDarkToggle: () => void;
   isDark: boolean;
   onExport: () => void;
   onImport: (ev: ChangeEvent<HTMLInputElement>) => void;
+  onQRSync: () => void;
   totalCount: number;
 };
 
@@ -17,11 +19,14 @@ export const Header: React.FC<HeaderProps> = ({
   isDark,
   onExport,
   onImport,
+  onQRSync,
   totalCount,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState("");
+  const [showPINSetup, setShowPINSetup] = useState(false);
+  const [newPIN, setNewPIN] = useState("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Close menu if clicked outside
@@ -56,20 +61,30 @@ export const Header: React.FC<HeaderProps> = ({
       if (file.type.includes('json') || file.name.toLowerCase().endsWith('.json')) {
         setSelectedFileName(file.name);
         
-        // Set the file to the hidden input and trigger the change event
         if (fileInputRef.current) {
           const dataTransfer = new DataTransfer();
           dataTransfer.items.add(file);
           fileInputRef.current.files = dataTransfer.files;
           
-          // Create a proper synthetic event
-          const syntheticEvent = new Event('change', { bubbles: true });
-          Object.defineProperty(syntheticEvent, 'target', {
-            writable: false,
-            value: fileInputRef.current
-          });
+          const syntheticEvent = {
+            target: fileInputRef.current,
+            currentTarget: fileInputRef.current,
+            nativeEvent: new Event('change'),
+            bubbles: true,
+            cancelable: true,
+            defaultPrevented: false,
+            eventPhase: 2,
+            isTrusted: true,
+            preventDefault: () => {},
+            isDefaultPrevented: () => false,
+            stopPropagation: () => {},
+            isPropagationStopped: () => false,
+            persist: () => {},
+            timeStamp: Date.now(),
+            type: 'change'
+          } as ChangeEvent<HTMLInputElement>;
           
-          onImport(syntheticEvent as unknown as ChangeEvent<HTMLInputElement>);
+          onImport(syntheticEvent);
         }
         setMenuOpen(false);
       } else {
@@ -98,6 +113,56 @@ export const Header: React.FC<HeaderProps> = ({
       description: "Your collection is being downloaded...",
     });
   };
+
+  const handleQRSyncClick = () => {
+    onQRSync();
+    setMenuOpen(false);
+  };
+
+  const handlePINToggle = () => {
+    if (isPINEnabled()) {
+      if (window.confirm("Disable PIN protection? This will remove the security lock.")) {
+        clearPIN();
+        toast({
+          title: "PIN Disabled",
+          description: "PIN protection has been removed"
+        });
+      }
+    } else {
+      setShowPINSetup(true);
+    }
+    setMenuOpen(false);
+  };
+
+  const handleSetPIN = () => {
+    if (newPIN.length !== 4 || !/^\d{4}$/.test(newPIN)) {
+      toast({
+        title: "Invalid PIN",
+        description: "Please enter a 4-digit PIN",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setPIN(newPIN);
+    setNewPIN("");
+    setShowPINSetup(false);
+    toast({
+      title: "PIN Enabled",
+      description: "Your vault is now protected with a PIN"
+    });
+  };
+
+  // Close menu if clicked outside
+  React.useEffect(() => {
+    function close(e: MouseEvent) {
+      if (!(e.target as HTMLElement)?.closest(".menu-anchor")) setMenuOpen(false);
+    }
+    if (menuOpen) {
+      document.addEventListener("mousedown", close);
+      return () => document.removeEventListener("mousedown", close);
+    }
+  }, [menuOpen]);
 
   return (
     <>
@@ -176,6 +241,22 @@ export const Header: React.FC<HeaderProps> = ({
                   </label>
                 </div>
 
+                <button
+                  className="w-full px-3 sm:px-4 py-2 text-left hover:bg-primary/10 transition rounded-xl text-foreground font-medium text-sm flex items-center gap-2"
+                  onClick={handleQRSyncClick}
+                >
+                  <QrCode className="w-4 h-4" />
+                  QR Sync
+                </button>
+
+                <button
+                  className="w-full px-3 sm:px-4 py-2 text-left hover:bg-primary/10 transition rounded-xl text-foreground font-medium text-sm flex items-center gap-2"
+                  onClick={handlePINToggle}
+                >
+                  <Lock className="w-4 h-4" />
+                  {isPINEnabled() ? "Disable PIN" : "Enable PIN"}
+                </button>
+
                 {selectedFileName && (
                   <div className="px-3 sm:px-4 py-2 text-xs text-muted-foreground flex items-center gap-2 border-t border-border/50 mt-1">
                     <FileText className="w-3 h-3" />
@@ -191,6 +272,35 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </header>
+
+      {/* PIN Setup Modal */}
+      {showPINSetup && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg p-6 w-full max-w-sm space-y-4">
+            <h3 className="text-lg font-semibold">Set PIN Protection</h3>
+            <p className="text-sm text-muted-foreground">
+              Enter a 4-digit PIN to protect your vault
+            </p>
+            <input
+              type="password"
+              value={newPIN}
+              onChange={(e) => setNewPIN(e.target.value.replace(/\D/g, '').slice(0, 4))}
+              placeholder="Enter 4-digit PIN"
+              className="w-full p-3 border rounded text-center text-2xl tracking-widest"
+              maxLength={4}
+              autoFocus
+            />
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setShowPINSetup(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button onClick={handleSetPIN} disabled={newPIN.length !== 4} className="flex-1">
+                Set PIN
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Global drag overlay */}
       {isDragOver && (
