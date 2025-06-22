@@ -5,10 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ManhwaTitle } from "@/types";
-import { generateSyncData, generateSyncURL, parseSyncData } from "@/utils/qrSync";
+import { generateSyncURL, parseSyncData } from "@/utils/qrSync";
 import { toast } from "@/hooks/use-toast";
-import QRCode from "qrcode";
-import { Copy, Download, Upload } from "lucide-react";
+import { Copy, Upload } from "lucide-react";
 
 interface QRSyncProps {
   open: boolean;
@@ -18,43 +17,15 @@ interface QRSyncProps {
 }
 
 export const QRSync: React.FC<QRSyncProps> = ({ open, onClose, titles, onImport }) => {
-  const [qrDataURL, setQrDataURL] = useState("");
   const [syncURL, setSyncURL] = useState("");
   const [importData, setImportData] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     if (open && titles.length > 0) {
-      generateQRCode();
-    }
-  }, [open, titles]);
-
-  const generateQRCode = async () => {
-    setIsGenerating(true);
-    try {
-      const syncData = generateSyncData(titles);
       const url = generateSyncURL(titles);
       setSyncURL(url);
-      
-      const qrCode = await QRCode.toDataURL(url, {
-        width: 300,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#FFFFFF'
-        }
-      });
-      setQrDataURL(qrCode);
-    } catch (error) {
-      toast({
-        title: "QR Generation Failed",
-        description: "Failed to generate QR code. Data might be too large.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsGenerating(false);
     }
-  };
+  }, [open, titles]);
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -70,15 +41,6 @@ export const QRSync: React.FC<QRSyncProps> = ({ open, onClose, titles, onImport 
         variant: "destructive"
       });
     }
-  };
-
-  const downloadQR = () => {
-    if (!qrDataURL) return;
-    
-    const link = document.createElement('a');
-    link.download = `manhwa-vault-sync-${new Date().toISOString().split('T')[0]}.png`;
-    link.href = qrDataURL;
-    link.click();
   };
 
   const handleImport = () => {
@@ -132,35 +94,35 @@ export const QRSync: React.FC<QRSyncProps> = ({ open, onClose, titles, onImport 
           </TabsList>
 
           <TabsContent value="export" className="space-y-4">
-            <div className="text-center space-y-4">
+            <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                Scan this QR code or share the link to sync your collection
+                Share this link to sync your collection across devices
               </p>
               
-              {isGenerating ? (
-                <div className="flex justify-center items-center h-[300px]">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                </div>
-              ) : qrDataURL ? (
+              {syncURL ? (
                 <div className="space-y-3">
-                  <img src={qrDataURL} alt="Sync QR Code" className="mx-auto border rounded" />
-                  <div className="flex gap-2 justify-center">
-                    <Button variant="outline" size="sm" onClick={downloadQR}>
-                      <Download size={16} className="mr-1" />
-                      Download
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => copyToClipboard(syncURL)}>
-                      <Copy size={16} className="mr-1" />
-                      Copy Link
-                    </Button>
-                  </div>
+                  <Input
+                    value={syncURL}
+                    readOnly
+                    className="text-xs"
+                    onClick={() => copyToClipboard(syncURL)}
+                  />
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => copyToClipboard(syncURL)}
+                    className="w-full"
+                  >
+                    <Copy size={16} className="mr-2" />
+                    Copy Sync Link
+                  </Button>
                 </div>
               ) : (
                 <p className="text-muted-foreground">No data to export</p>
               )}
               
               <p className="text-xs text-muted-foreground">
-                💡 The QR code contains your entire collection data
+                💡 The link contains your entire collection data
               </p>
             </div>
           </TabsContent>
