@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {
   Dialog,
@@ -8,6 +7,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ManhwaTitle, TitleType, TitleStatus } from "@/types";
+import { ImageIcon, AlertCircle } from "lucide-react";
 
 const initialState: Omit<ManhwaTitle, "id" | "lastUpdated"> = {
   title: "",
@@ -52,6 +52,9 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
       : initialState
   );
 
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
   React.useEffect(() => {
     if (editingTitle) {
       setForm({
@@ -68,6 +71,8 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
     } else {
       setForm(initialState);
     }
+    setImageError(false);
+    setImageLoading(false);
   }, [editingTitle, open, isEditing]);
 
   function handleChange<K extends keyof typeof form>(field: K, val: any) {
@@ -75,6 +80,16 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
       ...prev,
       [field]: val,
     }));
+
+    // Reset image states when URL changes
+    if (field === "coverUrl") {
+      setImageError(false);
+      if (val && val.trim()) {
+        setImageLoading(true);
+      } else {
+        setImageLoading(false);
+      }
+    }
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -88,6 +103,26 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
     });
     onClose();
   }
+
+  function handleImageLoad() {
+    setImageLoading(false);
+    setImageError(false);
+  }
+
+  function handleImageError() {
+    setImageLoading(false);
+    setImageError(true);
+  }
+
+  const isValidImageUrl = (url: string) => {
+    if (!url) return false;
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -171,27 +206,66 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
               />
             </div>
             
+            {/* Enhanced Cover Image URL section */}
             <div>
               <label className="block font-semibold mb-2 text-sm sm:text-base text-foreground">Cover Image URL</label>
               <Input
                 type="url"
                 value={form.coverUrl || ""}
-                placeholder="Paste image URL here"
+                placeholder="https://example.com/image.jpg"
                 onChange={(e) => handleChange("coverUrl", e.target.value)}
                 className="bg-muted text-foreground font-medium text-sm sm:text-base"
               />
-              {form.coverUrl && (
-                <div className="mt-2 p-2 bg-muted/50 rounded-lg">
-                  <p className="text-xs text-muted-foreground mb-2">Preview:</p>
-                  <img 
-                    src={form.coverUrl} 
-                    alt="Cover preview" 
-                    className="w-16 h-20 object-cover rounded"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                    }}
-                  />
+              
+              {/* Live Preview Section */}
+              {form.coverUrl && isValidImageUrl(form.coverUrl) && (
+                <div className="mt-3 p-3 bg-muted/50 rounded-lg border border-border/50">
+                  <p className="text-xs text-muted-foreground mb-2 font-medium">Preview:</p>
+                  <div className="relative">
+                    {imageLoading && (
+                      <div className="flex items-center justify-center w-16 h-20 bg-card border border-border rounded-md">
+                        <div className="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                      </div>
+                    )}
+                    
+                    {!imageLoading && !imageError && (
+                      <img 
+                        src={form.coverUrl} 
+                        alt="Cover preview" 
+                        className="w-16 h-20 object-cover rounded-md shadow-sm animate-fade-in transition-opacity duration-300"
+                        onLoad={handleImageLoad}
+                        onError={handleImageError}
+                      />
+                    )}
+                    
+                    {!imageLoading && imageError && (
+                      <div className="flex flex-col items-center justify-center w-16 h-20 bg-card border border-border rounded-md text-muted-foreground">
+                        <AlertCircle size={16} className="mb-1" />
+                        <span className="text-xs text-center">Not Found</span>
+                      </div>
+                    )}
+                    
+                    {/* Hidden image for loading detection */}
+                    {form.coverUrl && (
+                      <img 
+                        src={form.coverUrl}
+                        className="hidden"
+                        onLoad={handleImageLoad}
+                        onError={handleImageError}
+                        alt=""
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              {/* Invalid URL indicator */}
+              {form.coverUrl && !isValidImageUrl(form.coverUrl) && (
+                <div className="mt-2 p-2 bg-destructive/10 border border-destructive/20 rounded-lg">
+                  <div className="flex items-center gap-2 text-destructive text-xs">
+                    <AlertCircle size={14} />
+                    <span>Please enter a valid URL</span>
+                  </div>
                 </div>
               )}
             </div>

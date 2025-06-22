@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Star, X, Grid2x2, Grid3x3, List } from "lucide-react";
+import { Plus, Star, X, Grid2x2, Grid3x3, List, Grid } from "lucide-react";
 import { TitleStatus, TitleType } from "@/types";
 
 const TABS = [
@@ -23,7 +23,7 @@ const GRID_OPTIONS = [
   { value: 2, icon: List, label: "2" },
   { value: 3, icon: Grid2x2, label: "3" },
   { value: 4, icon: Grid3x3, label: "4" },
-  { value: 6, icon: Grid3x3, label: "6" },
+  { value: 6, icon: Grid, label: "6" },
 ];
 
 interface TitlesToolbarProps {
@@ -101,18 +101,25 @@ export const TitlesToolbar: React.FC<TitlesToolbarProps> = ({
           </div>
         </div>
         
-        {/* Grid Toggle Buttons - Better mobile positioning */}
+        {/* Grid Toggle Buttons - Fixed grid selection */}
         <div className="flex items-center gap-1 self-end sm:self-auto">
-          {GRID_OPTIONS.map(opt => (
-            <button
-              key={opt.value}
-              className={`rounded-full p-1.5 sm:p-2 border text-xs sm:text-sm ${grid === opt.value ? "bg-primary text-white border-primary" : "bg-card text-muted-foreground border-muted-foreground/20"} transition hover:bg-primary/10`}
-              title={`Show ${opt.value} columns`}
-              onClick={() => setGrid(opt.value)}
-            >
-              <opt.icon size={16} />
-            </button>
-          ))}
+          {GRID_OPTIONS.map(opt => {
+            const IconComponent = opt.icon;
+            return (
+              <button
+                key={opt.value}
+                className={`rounded-full p-1.5 sm:p-2 border text-xs sm:text-sm transition-colors ${
+                  grid === opt.value 
+                    ? "bg-primary text-white border-primary shadow-sm" 
+                    : "bg-card text-muted-foreground border-muted-foreground/20 hover:bg-primary/10 hover:border-primary/30"
+                }`}
+                title={`Show ${opt.value} columns`}
+                onClick={() => setGrid(opt.value)}
+              >
+                <IconComponent size={16} />
+              </button>
+            );
+          })}
         </div>
       </div>
       
@@ -138,7 +145,6 @@ export const TitlesToolbar: React.FC<TitlesToolbarProps> = ({
           )}
         </div>
         
-        {/* Filter selects - Better mobile layout */}
         <div className="flex gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
           <select
             value={typeFilter}
