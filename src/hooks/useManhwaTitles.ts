@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ManhwaTitle } from "@/types";
 import { createHistoryEntry } from "@/utils/readingHistory";
@@ -65,15 +64,31 @@ export function useManhwaTitles() {
     setTitles((prev) =>
       prev.map((t) => {
         if (t.id === editingTitle.id) {
-          const historyEntry = createHistoryEntry("edited", {
+          const historyEntries = [...(t.readingHistory || [])];
+          
+          // Check if rating changed to add specific history entry
+          if (editingTitle.rating !== data.rating) {
+            const ratingHistoryEntry = createHistoryEntry("rated", {
+              previousRating: editingTitle.rating,
+              newRating: data.rating,
+              description: data.rating 
+                ? `Rated "${data.title}" ${data.rating}/10`
+                : `Removed rating from "${data.title}"`
+            });
+            historyEntries.push(ratingHistoryEntry);
+          }
+          
+          // Add general edit history entry
+          const editHistoryEntry = createHistoryEntry("edited", {
             description: `Updated title information`
           });
+          historyEntries.push(editHistoryEntry);
           
           return {
             ...t,
             ...data,
             lastUpdated: Date.now(),
-            readingHistory: [...(t.readingHistory || []), historyEntry]
+            readingHistory: historyEntries
           };
         }
         return t;
