@@ -1,18 +1,20 @@
+
 import { useState, useEffect } from "react";
 import { ManhwaTitle } from "@/types";
-import { createHistoryEntry } from "@/utils/readingHistory";
-import {
-  saveTitlesToStorage,
-  loadTitlesFromStorage,
-  exportTitlesAsJson,
-  importTitlesFromJson,
-  mergeTitlesWithDuplicateHandling,
-} from "@/utils/localStore";
+import { saveTitlesToStorage, loadTitlesFromStorage } from "@/utils/localStore";
 import { toast } from "@/hooks/use-toast";
-
-function generateId() {
-  return Math.random().toString(36).slice(2, 10) + Date.now();
-}
+import {
+  createNewTitle,
+  updateTitle,
+  addChapterToTitle,
+  toggleTitleFavorite,
+  changeStatusToReading,
+} from "@/utils/titleOperations";
+import {
+  handleFileImport,
+  handleFileExport,
+  handleQRCodeImport,
+} from "@/utils/importExportOperations";
 
 export function useManhwaTitles() {
   const [titles, setTitles] = useState<ManhwaTitle[]>([]);
@@ -40,18 +42,7 @@ export function useManhwaTitles() {
   }, [titles]);
 
   function handleAddNew(data: Omit<ManhwaTitle, "id" | "lastUpdated">) {
-    const newTitle: ManhwaTitle = {
-      ...data,
-      id: generateId(),
-      lastUpdated: Date.now(),
-      isFavorite: data.isFavorite || false,
-      tags: data.tags || [],
-      readingHistory: [
-        createHistoryEntry("added", {
-          description: `Added "${data.title}" to collection`
-        })
-      ]
-    };
+    const newTitle = createNewTitle(data);
     setTitles((prev) => [newTitle, ...prev]);
     
     toast({
@@ -64,32 +55,7 @@ export function useManhwaTitles() {
     setTitles((prev) =>
       prev.map((t) => {
         if (t.id === editingTitle.id) {
-          const historyEntries = [...(t.readingHistory || [])];
-          
-          // Check if rating changed to add specific history entry
-          if (editingTitle.rating !== data.rating) {
-            const ratingHistoryEntry = createHistoryEntry("rated", {
-              previousRating: editingTitle.rating,
-              newRating: data.rating,
-              description: data.rating 
-                ? `Rated "${data.title}" ${data.rating}/10`
-                : `Removed rating from "${data.title}"`
-            });
-            historyEntries.push(ratingHistoryEntry);
-          }
-          
-          // Add general edit history entry
-          const editHistoryEntry = createHistoryEntry("edited", {
-            description: `Updated title information`
-          });
-          historyEntries.push(editHistoryEntry);
-          
-          return {
-            ...t,
-            ...data,
-            lastUpdated: Date.now(),
-            readingHistory: historyEntries
-          };
+          return updateTitle(t, data);
         }
         return t;
       })
@@ -117,19 +83,7 @@ export function useManhwaTitles() {
     setTitles((prev) =>
       prev.map((t) => {
         if (t.id === id) {
-          const newChapter = t.chapter + 1;
-          const historyEntry = createHistoryEntry("chapter_updated", {
-            previousChapter: t.chapter,
-            newChapter: newChapter,
-            description: `Read chapter ${newChapter} of "${t.title}"`
-          });
-          
-          return {
-            ...t,
-            chapter: newChapter,
-            lastUpdated: Date.now(),
-            readingHistory: [...(t.readingHistory || []), historyEntry]
-          };
+          return addChapterToTitle(t);
         }
         return t;
       })
@@ -139,7 +93,7 @@ export function useManhwaTitles() {
   function onToggleFavorite(id: string) {
     setTitles((prev) =>
       prev.map((t) =>
-        t.id === id ? { ...t, isFavorite: !t.isFavorite, lastUpdated: Date.now() } : t
+        t.id === id ? toggleTitleFavorite(t) : t
       )
     );
   }
@@ -148,18 +102,7 @@ export function useManhwaTitles() {
     setTitles((prev) =>
       prev.map((t) => {
         if (t.id === id) {
-          const historyEntry = createHistoryEntry("status_changed", {
-            previousStatus: t.status,
-            newStatus: "Reading",
-            description: `Changed status from ${t.status} to Reading`
-          });
-          
-          return {
-            ...t,
-            status: "Reading" as const,
-            lastUpdated: Date.now(),
-            readingHistory: [...(t.readingHistory || []), historyEntry]
-          };
+          return changeStatusToReading(t);
         }
         return t;
       })
@@ -172,24 +115,10 @@ export function useManhwaTitles() {
     setIsLoading(true);
     
     try {
-      const imported = await importTitlesFromJson(e.target.files[0]);
-      const mergedTitles = mergeTitlesWithDuplicateHandling(titles, imported);
-      const newTitlesCount = mergedTitles.length - titles.length;
-      const duplicatesCount = imported.length - newTitlesCount;
-      
+      const mergedTitles = await handleFileImport(e.target.files[0], titles);
       setTitles(mergedTitles);
-      
-      toast({
-        title: "Import Successful! 🎉",
-        description: `${newTitlesCount} new titles imported${duplicatesCount > 0 ? `. ${duplicatesCount} duplicates were skipped.` : '.'}`
-      });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      toast({
-        title: "Import Failed",
-        description: errorMessage,
-        variant: "destructive"
-      });
+      // Error handling is done in handleFileImport
     } finally {
       setIsLoading(false);
       // Clear the file input
@@ -198,34 +127,12 @@ export function useManhwaTitles() {
   }
 
   function handleExport() {
-    const result = exportTitlesAsJson(titles);
-    if (result.success) {
-      toast({
-        title: "Export Successful! 📁",
-        description: `Your collection of ${titles.length} titles has been downloaded.`
-      });
-    } else {
-      toast({
-        title: "Export Failed",
-        description: result.error || "There was an error exporting your data. Please try again.",
-        variant: "destructive"
-      });
-    }
+    handleFileExport(titles);
   }
 
   function handleQRImport(importedTitles: ManhwaTitle[]) {
-    const mergedTitles = mergeTitlesWithDuplicateHandling(titles, importedTitles);
-    const newTitlesCount = mergedTitles.length - titles.length;
-    const duplicatesCount = importedTitles.length - newTitlesCount;
-    
+    const { mergedTitles } = handleQRCodeImport(importedTitles, titles);
     setTitles(mergedTitles);
-    
-    if (duplicatesCount > 0) {
-      toast({
-        title: "QR Sync Complete",
-        description: `${newTitlesCount} new titles imported, ${duplicatesCount} duplicates skipped`
-      });
-    }
   }
 
   return {
