@@ -8,6 +8,8 @@ export function createHistoryEntry(
     newChapter?: number;
     previousStatus?: TitleStatus;
     newStatus?: TitleStatus;
+    previousRating?: number;
+    newRating?: number;
     description: string;
   }
 ): ReadingHistoryEntry {
