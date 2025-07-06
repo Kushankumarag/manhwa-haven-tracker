@@ -2,7 +2,7 @@
 export type TitleType = "Manhwa" | "Manhua" | "Manga";
 export type TitleStatus = "Reading" | "Completed" | "Planned";
 
-export type HistoryAction = "added" | "chapter_updated" | "status_changed" | "edited";
+export type HistoryAction = "added" | "chapter_updated" | "status_changed" | "edited" | "rated";
 
 export interface ReadingHistoryEntry {
   id: string;
@@ -13,6 +13,8 @@ export interface ReadingHistoryEntry {
     newChapter?: number;
     previousStatus?: TitleStatus;
     newStatus?: TitleStatus;
+    previousRating?: number;
+    newRating?: number;
     description: string;
   };
 }
@@ -28,6 +30,7 @@ export interface ManhwaTitle {
   tags: string[];
   status: TitleStatus;
   isFavorite?: boolean;
+  rating?: number; // Rating from 1-10
   lastUpdated: number; // timestamp
   readingHistory?: ReadingHistoryEntry[];
 }

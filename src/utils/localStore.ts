@@ -44,6 +44,7 @@ export function exportTitlesAsJson(titles: ManhwaTitle[]): { success: boolean; e
         tags: title.tags || [],
         status: title.status,
         isFavorite: title.isFavorite || false,
+        rating: title.rating || null,
         lastUpdated: title.lastUpdated
       }))
     };

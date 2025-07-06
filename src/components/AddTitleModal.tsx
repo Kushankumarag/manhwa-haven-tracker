@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   Dialog,
@@ -7,7 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ManhwaTitle, TitleType, TitleStatus } from "@/types";
-import { ImageIcon, AlertCircle } from "lucide-react";
+import { ImageIcon, AlertCircle, Star } from "lucide-react";
 
 const initialState: Omit<ManhwaTitle, "id" | "lastUpdated"> = {
   title: "",
@@ -19,6 +20,7 @@ const initialState: Omit<ManhwaTitle, "id" | "lastUpdated"> = {
   tags: [],
   status: "Planned",
   isFavorite: false,
+  rating: undefined,
 };
 
 type AddTitleModalProps = {
@@ -48,6 +50,7 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
           tags: editingTitle.tags,
           status: editingTitle.status,
           isFavorite: editingTitle.isFavorite || false,
+          rating: editingTitle.rating,
         }
       : initialState
   );
@@ -67,6 +70,7 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
         tags: editingTitle.tags,
         status: editingTitle.status,
         isFavorite: editingTitle.isFavorite || false,
+        rating: editingTitle.rating,
       });
     } else {
       setForm(initialState);
@@ -100,6 +104,7 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
       tags: form.tags.filter((t) => t.trim() !== ""),
       chapter: Number(form.chapter) || 1,
       totalChapters: form.totalChapters ? Number(form.totalChapters) : undefined,
+      rating: form.rating ? Number(form.rating) : undefined,
     });
     onClose();
   }
@@ -192,6 +197,29 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
                   <option value="Completed">Completed</option>
                   <option value="Planned">Planned</option>
                 </select>
+              </div>
+            </div>
+
+            {/* Rating Section */}
+            <div>
+              <label className="block font-semibold mb-2 text-sm sm:text-base text-foreground">Rating (1-10)</label>
+              <div className="flex items-center gap-2">
+                <select
+                  className="w-full p-2 sm:p-3 rounded-full bg-muted text-foreground font-medium text-sm sm:text-base"
+                  value={form.rating || ""}
+                  onChange={(e) => handleChange("rating", e.target.value ? Number(e.target.value) : undefined)}
+                >
+                  <option value="">No Rating</option>
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
+                    <option key={num} value={num}>{num}/10</option>
+                  ))}
+                </select>
+                {form.rating && (
+                  <div className="flex items-center gap-1 text-yellow-500">
+                    <Star size={16} fill="currentColor" />
+                    <span className="text-sm font-medium">{form.rating}/10</span>
+                  </div>
+                )}
               </div>
             </div>
             

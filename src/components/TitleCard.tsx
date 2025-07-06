@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { ManhwaTitle } from "@/types";
 import { ProgressBar } from "./ProgressBar";
 import { ReadingHistory } from "./ReadingHistory";
-import { Link as LinkIcon, MoreHorizontal } from "lucide-react";
+import { Link as LinkIcon, MoreHorizontal, Star } from "lucide-react";
 import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem } from "@/components/ui/menubar";
 
 type Props = {
@@ -124,6 +124,14 @@ export const TitleCard: React.FC<Props> = ({
       
       {/* Title */}
       <h3 className="font-bold text-sm sm:text-base mb-1 truncate text-foreground leading-tight">{title.title}</h3>
+      
+      {/* Rating */}
+      {title.rating && (
+        <div className="mb-1 flex items-center gap-1">
+          <Star size={12} className="text-yellow-500 fill-current" />
+          <span className="text-xs font-medium text-foreground">{title.rating}/10</span>
+        </div>
+      )}
       
       {/* Tags */}
       {title.tags && title.tags.length > 0 && (
