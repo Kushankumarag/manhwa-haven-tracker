@@ -1,4 +1,3 @@
-
 export type TitleType = "Manhwa" | "Manhua" | "Manga";
 export type TitleStatus = "Reading" | "Completed" | "Planned";
 
@@ -40,3 +39,6 @@ export interface AppSettings {
   pinHash?: string;
   autoLockMinutes: number;
 }
+
+// Re-export reading sites types for convenience
+export * from './types/readingSites';
