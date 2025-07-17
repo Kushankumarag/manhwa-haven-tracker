@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,17 +18,17 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <SidebarProvider>
-        <div className="flex min-h-screen w-full">
-          <AppSidebar />
-          <SidebarInset className="flex-1">
-            <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-              <SidebarTrigger className="-ml-1" />
-              <div className="flex items-center gap-2">
-                <h1 className="text-lg font-semibold">ManhwaVault</h1>
-              </div>
-            </header>
-            <BrowserRouter>
+      <BrowserRouter>
+        <SidebarProvider>
+          <div className="flex min-h-screen w-full">
+            <AppSidebar />
+            <SidebarInset className="flex-1">
+              <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+                <SidebarTrigger className="-ml-1" />
+                <div className="flex items-center gap-2">
+                  <h1 className="text-lg font-semibold">ManhwaVault</h1>
+                </div>
+              </header>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/stats" element={<Statistics />} />
@@ -35,10 +36,10 @@ const App = () => (
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </BrowserRouter>
-          </SidebarInset>
-        </div>
-      </SidebarProvider>
+            </SidebarInset>
+          </div>
+        </SidebarProvider>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
