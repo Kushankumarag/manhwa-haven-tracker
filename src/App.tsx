@@ -14,11 +14,11 @@ import ReadingSites from "./pages/ReadingSites";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+  <BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
         <SidebarProvider>
           <div className="flex min-h-screen w-full">
             <AppSidebar />
@@ -39,9 +39,9 @@ const App = () => (
             </SidebarInset>
           </div>
         </SidebarProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </BrowserRouter>
 );
 
 export default App;
