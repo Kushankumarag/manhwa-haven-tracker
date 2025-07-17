@@ -120,19 +120,20 @@ export default function ReadingSites() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold capitalize">{siteType} Sites</h1>
-          <p className="text-muted-foreground">
+    <div className="container mx-auto p-3 md:p-6 space-y-4 md:space-y-6 max-w-full overflow-hidden">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-2xl md:text-3xl font-bold capitalize truncate">{siteType} Sites</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
             Manage your favorite {siteType} reading websites
           </p>
         </div>
         
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={handleExport} size="sm">
-            <FileDown className="h-4 w-4 mr-2" />
-            Export
+        <div className="flex gap-2 flex-shrink-0">
+          <Button variant="outline" onClick={handleExport} size="sm" className="text-xs md:text-sm">
+            <FileDown className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+            <span className="hidden sm:inline">Export</span>
+            <span className="sm:hidden">Exp</span>
           </Button>
           <div className="relative">
             <input
@@ -141,9 +142,10 @@ export default function ReadingSites() {
               onChange={handleImport}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
-            <Button variant="outline" size="sm">
-              <FileUp className="h-4 w-4 mr-2" />
-              Import
+            <Button variant="outline" size="sm" className="text-xs md:text-sm">
+              <FileUp className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+              <span className="hidden sm:inline">Import</span>
+              <span className="sm:hidden">Imp</span>
             </Button>
           </div>
         </div>
@@ -158,24 +160,24 @@ export default function ReadingSites() {
 
       {filteredSites.length > 0 && (
         <Card className="backdrop-blur-sm bg-card/50 border-border/50">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>
+          <CardHeader className="pb-3 md:pb-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <CardTitle className="text-lg md:text-xl truncate">
                 Your {siteType === 'manhwa' ? 'Manhwa' : 'Manhua'} Sites ({filteredSites.length})
               </CardTitle>
-              <div className="relative w-64">
+              <div className="relative w-full md:w-64">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search sites..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 text-sm"
                 />
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
               {filteredSites.map((site) => (
                 <ReadingSiteCard
                   key={site.id}
