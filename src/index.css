@@ -178,6 +178,19 @@ input, select, textarea, button {
   .text-mobile-sm { font-size: 0.75rem; }
   .text-mobile-base { font-size: 0.875rem; }
   .text-mobile-lg { font-size: 1rem; }
+  
+  /* Mobile container improvements */
+  .mobile-container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+  
+  /* Better mobile tap targets */
+  .mobile-tap {
+    min-height: 48px;
+    min-width: 48px;
+    touch-action: manipulation;
+  }
 }
 
 /* Improved focus states for mobile */

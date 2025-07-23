@@ -22,11 +22,11 @@ const App = () => (
         <SidebarProvider defaultOpen={false}>
           <div className="flex min-h-screen w-full">
             <AppSidebar />
-            <SidebarInset className="flex-1">
-              <header className="flex h-12 md:h-16 shrink-0 items-center gap-2 border-b px-3 md:px-4">
-                <SidebarTrigger className="-ml-1" />
-                <div className="flex items-center gap-2">
-                  <h1 className="text-base md:text-lg font-semibold truncate">ManhwaVault</h1>
+            <SidebarInset className="flex-1 min-w-0">
+              <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
+                <SidebarTrigger className="-ml-1 h-8 w-8 touch-target" />
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <h1 className="text-lg font-semibold truncate">ManhwaVault</h1>
                 </div>
               </header>
               <Routes>

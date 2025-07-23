@@ -36,18 +36,18 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="border-r border-sidebar-border">
-      <SidebarContent>
+    <Sidebar className="border-r border-sidebar-border md:w-60" side="left" variant="sidebar">
+      <SidebarContent className="p-2">
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-medium text-sidebar-foreground/70 px-2 py-1">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="h-10 touch-target">
                     <NavLink to={item.url} className={getNavClass(item.url)}>
-                      <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5" />
+                      <span className="font-medium">{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -56,16 +56,16 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel>Reading Sites</SidebarGroupLabel>
+        <SidebarGroup className="mt-4">
+          <SidebarGroupLabel className="text-xs font-medium text-sidebar-foreground/70 px-2 py-1">Reading Sites</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {readingSiteItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="h-10 touch-target">
                     <NavLink to={item.url} className={getNavClass(item.url)}>
-                      <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      <item.icon className="h-5 w-5" />
+                      <span className="font-medium">{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
