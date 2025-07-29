@@ -21,13 +21,13 @@ export function TypeFilter({ selectedType, onTypeChange }: TypeFilterProps) {
         type="single"
         value={selectedType}
         onValueChange={(value) => onTypeChange(value as TitleType | "")}
-        className="justify-start gap-2"
+        className="flex flex-wrap justify-center sm:justify-start gap-2"
       >
         {typeOptions.map((option) => (
           <ToggleGroupItem
             key={option.value}
             value={option.value}
-            className="px-4 py-2 rounded-full border border-border bg-card hover:bg-accent transition-colors text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+            className="px-3 sm:px-4 py-2 rounded-full border border-border bg-card hover:bg-accent transition-colors text-xs sm:text-sm font-medium data-[state=on]:bg-primary data-[state=on]:text-primary-foreground touch-target min-w-[60px] sm:min-w-[80px]"
           >
             {option.label}
           </ToggleGroupItem>

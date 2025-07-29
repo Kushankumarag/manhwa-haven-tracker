@@ -185,11 +185,21 @@ input, select, textarea, button {
     padding-right: max(1rem, env(safe-area-inset-right));
   }
   
-  /* Better mobile tap targets */
-  .mobile-tap {
+  /* Enhanced mobile tap targets and touch-friendly UI */
+  .mobile-tap, .touch-target {
     min-height: 48px;
     min-width: 48px;
     touch-action: manipulation;
+  }
+  
+  /* Better toggle group spacing on mobile */
+  [data-radix-toggle-group] {
+    gap: 8px;
+  }
+  
+  /* Improved mobile form elements - prevents zoom on iOS */
+  input, select, textarea, button {
+    font-size: 16px;
   }
 }
 
