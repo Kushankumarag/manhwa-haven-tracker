@@ -9,6 +9,7 @@ import { AddTitleModal } from "@/components/AddTitleModal";
 import { Header } from "@/components/Header";
 import { PINEntry } from "@/components/PINEntry";
 import { QRSync } from "@/components/QRSync";
+import { TypeFilter } from "@/components/TypeFilter";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { isPINEnabled } from "@/utils/pinSecurity";
 import { extractSyncDataFromURL, parseSyncData } from "@/utils/qrSync";
@@ -128,6 +129,12 @@ export default function Index() {
           grid={grid}
           setGrid={setGrid}
           onAddNew={handleAddNewClick}
+        />
+
+        {/* Type Filter Toggle Buttons */}
+        <TypeFilter
+          selectedType={typeFilter}
+          onTypeChange={setTypeFilter}
         />
 
         {/* Section header */}
