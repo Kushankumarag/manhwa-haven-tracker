@@ -132,11 +132,33 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="bg-popover p-0 rounded-2xl shadow-xl w-[95vw] max-w-md mx-auto border-0 overflow-visible max-h-[90vh] overflow-y-auto">
-        <DialogTitle className="mb-2 mt-3 px-4 sm:px-8 text-xl sm:text-2xl font-semibold text-foreground text-center">
+        <DialogTitle className="mb-4 sm:mb-6 mt-3 px-4 sm:px-8 text-xl sm:text-2xl font-semibold text-foreground text-center">
           {isEditing ? "Edit Title" : "Add New Title"}
         </DialogTitle>
-        <div className="px-4 sm:px-8 pb-6 sm:pb-8 pt-2 w-full bg-popover rounded-b-2xl shadow-none text-foreground">
-          <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
+        
+        {/* Action Buttons positioned after title */}
+        <div className="px-4 sm:px-8 mb-6 sm:mb-8">
+          <div className="flex justify-end gap-2 sm:gap-3">
+            <Button 
+              type="button" 
+              variant="secondary" 
+              onClick={onClose} 
+              className="rounded-full px-4 sm:px-6 py-2 bg-secondary text-foreground border-0 hover:bg-accent font-medium text-sm sm:text-base touch-target"
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              form="add-title-form"
+              className="rounded-full px-4 sm:px-6 py-2 bg-primary text-white border-0 font-bold hover:bg-primary/80 text-sm sm:text-base touch-target"
+            >
+              {isEditing ? "Save" : "Add"}
+            </Button>
+          </div>
+        </div>
+        
+        <div className="px-4 sm:px-8 pb-6 sm:pb-8 w-full bg-popover rounded-b-2xl shadow-none text-foreground">
+          <form id="add-title-form" className="space-y-5 sm:space-y-7" onSubmit={handleSubmit}>
             <div>
               <label className="block font-semibold mb-2 text-sm sm:text-base text-foreground">Title</label>
               <Input
@@ -313,23 +335,6 @@ export const AddTitleModal: React.FC<AddTitleModalProps> = ({
                 )}
                 className="bg-muted text-foreground font-medium text-sm sm:text-base"
               />
-            </div>
-            
-            <div className="flex justify-end gap-2 sm:gap-3 mt-6 pt-2">
-              <Button 
-                type="button" 
-                variant="secondary" 
-                onClick={onClose} 
-                className="rounded-full px-4 sm:px-6 py-2 bg-secondary text-foreground border-0 hover:bg-accent font-medium text-sm sm:text-base"
-              >
-                Cancel
-              </Button>
-              <Button 
-                type="submit" 
-                className="rounded-full px-4 sm:px-6 py-2 bg-primary text-white border-0 font-bold hover:bg-primary/80 text-sm sm:text-base"
-              >
-                {isEditing ? "Save" : "Add"}
-              </Button>
             </div>
           </form>
         </div>

@@ -201,6 +201,21 @@ input, select, textarea, button {
   input, select, textarea, button {
     font-size: 16px;
   }
+  
+  /* Better modal spacing on mobile */
+  [data-radix-dialog-content] {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Enhanced mobile form spacing */
+  .space-y-5 > * + * {
+    margin-top: 1.25rem;
+  }
+  
+  /* Better mobile button spacing */
+  .gap-2 {
+    gap: 0.75rem;
+  }
 }
 
 /* Improved focus states for mobile */
